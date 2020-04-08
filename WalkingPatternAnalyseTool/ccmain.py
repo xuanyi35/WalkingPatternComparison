@@ -1,6 +1,6 @@
 import sys
 from WalkingPatternAnalyseTool import PdVisualization
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QFileDialog
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QFileDialog, QDialog,QLabel, QVBoxLayout, QDialogButtonBox
 import sys, os, subprocess, time, shutil, signal
 import atexit
 
@@ -114,8 +114,34 @@ class FileWindow(QWidget):
             ui.HC_file.setPlainText(fileName)
 
 
+class CustomDialog(QDialog):
 
+    def __init__(self, *args, **kwargs):
+        super(CustomDialog, self).__init__(*args, **kwargs)
 
+        self.setWindowTitle("Info Box")
+        self.resize(100, 100)
+        self.info = QLabel("Wait, we are generating data.....")
+        QBtn = QDialogButtonBox.Ok | QDialogButtonBox.Cancel
+
+        self.buttonBox = QDialogButtonBox(QBtn)
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+        self.layout = QVBoxLayout()
+        self.layout.addWidget(self.info)
+        self.layout.addWidget( self.buttonBox)
+        self.setLayout(self.layout)
+        self.exec()
+
+        # self._timer_painter = QtCore.QTimer(self)
+        # self._timer_painter.start(5000)
+        # self._timer_painter.timeout.connect(self.timeoutHandler)
+        time.sleep(5)
+
+    def timeoutHandler(self):
+        print("time out")
+        self.accept
 
 def startVis():
     print("start!")
@@ -138,27 +164,32 @@ def startVis():
     ui.horizontalSlider.setMaximum(490)
     ui.horizontalSlider_2.setMaximum(490)
 
+    d = CustomDialog()
+    # d.setWindowModality( QtCore.Qt.ApplicationModal)
 
-
-
-    time.sleep(5)
 
     start_Left = 1
     start_Right = 1
 
 
 def exit_handler():
-    if pro1 != None:
-        time.sleep(0.1)
+    global pro1, pro2
+    try:
         pro1.kill()
-    if pro2 != None:
-        time.sleep(0.1)
         pro2.kill()
+    except:
+        pass
+    # if pro1 != None:
+    #     time.sleep(0.1)
+    #     pro1.kill()
+    # if pro2 != None:
+    #     time.sleep(0.1)
+    #     pro2.kill()
 
     if os.path.exists(f1):
-        shutil.rmtree(f1)
+        shutil.rmtree(f1, ignore_errors=True)
     if os.path.exists(f2):
-        shutil.rmtree(f2)
+        shutil.rmtree(f2, ignore_errors=True)
 
 
     print('My application is ending!')
@@ -204,15 +235,18 @@ def openFiles_HC():
     ex = FileWindow()
 
 if __name__ == '__main__':
+
+    if os.path.exists(f1):
+        shutil.rmtree(f1, ignore_errors=True)
+    os.makedirs(f1)
+    if os.path.exists(f2):
+        shutil.rmtree(f2, ignore_errors=True)
+    os.makedirs(f2)
+
     app = QApplication(sys.argv)
     MainWindow = QMainWindow()
 
-    if os.path.exists(f1):
-        shutil.rmtree(f1)
-    os.makedirs(f1)
-    if os.path.exists(f2):
-        shutil.rmtree(f2)
-    os.makedirs(f2)
+
 
     ui = PdVisualization.Ui_mainWindow()
     ui.setupUi(MainWindow)
