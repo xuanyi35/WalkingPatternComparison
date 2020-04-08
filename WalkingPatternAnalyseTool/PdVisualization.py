@@ -2,16 +2,18 @@
 
 # Form implementation generated from reading ui file 'PdVisualization.ui'
 #
-# Created by: PyQt5 UI code generator 5.9.2
+# Created by: PyQt5 UI code generator 5.14.1
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_mainWindow(object):
     def setupUi(self, mainWindow):
         mainWindow.setObjectName("mainWindow")
-        mainWindow.resize(1012, 666)
+        mainWindow.resize(1067, 706)
         mainWindow.setAutoFillBackground(True)
         self.centralwidget = QtWidgets.QWidget(mainWindow)
         self.centralwidget.setAutoFillBackground(True)
@@ -31,9 +33,6 @@ class Ui_mainWindow(object):
         self.graphicsView_3 = QtWidgets.QGraphicsView(self.groupBox)
         self.graphicsView_3.setGeometry(QtCore.QRect(30, 470, 311, 121))
         self.graphicsView_3.setObjectName("graphicsView_3")
-        self.fontComboBox = QtWidgets.QFontComboBox(self.groupBox)
-        self.fontComboBox.setGeometry(QtCore.QRect(30, 50, 311, 28))
-        self.fontComboBox.setObjectName("fontComboBox")
         self.horizontalSlider = QtWidgets.QSlider(self.groupBox)
         self.horizontalSlider.setGeometry(QtCore.QRect(30, 400, 251, 22))
         self.horizontalSlider.setOrientation(QtCore.Qt.Horizontal)
@@ -56,6 +55,17 @@ class Ui_mainWindow(object):
         self.label = QtWidgets.QLabel(self.groupBox)
         self.label.setGeometry(QtCore.QRect(290, 400, 59, 16))
         self.label.setObjectName("label")
+        self.patient_btn = QtWidgets.QPushButton(self.groupBox)
+        self.patient_btn.setGeometry(QtCore.QRect(280, 40, 61, 31))
+        self.patient_btn.setObjectName("patient_btn")
+        self.patient_file = QtWidgets.QPlainTextEdit(self.groupBox)
+        self.patient_file.setEnabled(True)
+        self.patient_file.setGeometry(QtCore.QRect(30, 40, 241, 31))
+        self.patient_file.setLineWidth(1)
+        self.patient_file.setMidLineWidth(0)
+        self.patient_file.setLineWrapMode(QtWidgets.QPlainTextEdit.WidgetWidth)
+        self.patient_file.setCenterOnScroll(True)
+        self.patient_file.setObjectName("patient_file")
         self.groupBox_2 = QtWidgets.QGroupBox(self.centralwidget)
         self.groupBox_2.setGeometry(QtCore.QRect(430, 0, 371, 621))
         font = QtGui.QFont()
@@ -71,9 +81,6 @@ class Ui_mainWindow(object):
         self.graphicsView_4 = QtWidgets.QGraphicsView(self.groupBox_2)
         self.graphicsView_4.setGeometry(QtCore.QRect(30, 470, 311, 121))
         self.graphicsView_4.setObjectName("graphicsView_4")
-        self.fontComboBox_2 = QtWidgets.QFontComboBox(self.groupBox_2)
-        self.fontComboBox_2.setGeometry(QtCore.QRect(30, 50, 311, 28))
-        self.fontComboBox_2.setObjectName("fontComboBox_2")
         self.horizontalSlider_2 = QtWidgets.QSlider(self.groupBox_2)
         self.horizontalSlider_2.setGeometry(QtCore.QRect(30, 400, 251, 22))
         self.horizontalSlider_2.setOrientation(QtCore.Qt.Horizontal)
@@ -96,6 +103,14 @@ class Ui_mainWindow(object):
         self.label_2 = QtWidgets.QLabel(self.groupBox_2)
         self.label_2.setGeometry(QtCore.QRect(290, 400, 59, 16))
         self.label_2.setObjectName("label_2")
+        self.HC_btn = QtWidgets.QPushButton(self.groupBox_2)
+        self.HC_btn.setGeometry(QtCore.QRect(280, 40, 61, 31))
+        self.HC_btn.setObjectName("HC_btn")
+        self.HC_file = QtWidgets.QPlainTextEdit(self.groupBox_2)
+        self.HC_file.setEnabled(True)
+        self.HC_file.setGeometry(QtCore.QRect(30, 40, 241, 31))
+        self.HC_file.setLineWrapMode(QtWidgets.QPlainTextEdit.WidgetWidth)
+        self.HC_file.setObjectName("HC_file")
         self.verticalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
         self.verticalLayoutWidget.setGeometry(QtCore.QRect(810, 0, 201, 621))
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
@@ -125,7 +140,7 @@ class Ui_mainWindow(object):
         self.verticalLayout.addWidget(self.pushButton)
         mainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(mainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1012, 22))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1067, 27))
         self.menubar.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
         self.menubar.setObjectName("menubar")
         mainWindow.setMenuBar(self.menubar)
@@ -144,14 +159,15 @@ class Ui_mainWindow(object):
         self.toolButton_5.setText(_translate("mainWindow", "o"))
         self.toolButton_6.setText(_translate("mainWindow", ">>>"))
         self.label.setText(_translate("mainWindow", "Timer"))
+        self.patient_btn.setText(_translate("mainWindow", "Browse"))
         self.groupBox_2.setTitle(_translate("mainWindow", "Health Control"))
         self.toolButton_7.setText(_translate("mainWindow", "<<<"))
         self.toolButton_8.setText(_translate("mainWindow", "o"))
         self.toolButton_9.setText(_translate("mainWindow", ">>>"))
         self.label_2.setText(_translate("mainWindow", "Timer"))
+        self.HC_btn.setText(_translate("mainWindow", "Browse"))
         self.groupBox_3.setTitle(_translate("mainWindow", "GroupBox"))
         self.pushButton_4.setText(_translate("mainWindow", "X axis"))
         self.pushButton_3.setText(_translate("mainWindow", "Y axis"))
         self.pushButton_2.setText(_translate("mainWindow", "Z axis"))
         self.pushButton.setText(_translate("mainWindow", "Start Visualization"))
-

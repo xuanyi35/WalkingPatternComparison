@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1012</width>
-    <height>666</height>
+    <width>1067</width>
+    <height>706</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -59,16 +59,6 @@
        <y>470</y>
        <width>311</width>
        <height>121</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QFontComboBox" name="fontComboBox">
-     <property name="geometry">
-      <rect>
-       <x>30</x>
-       <y>50</y>
-       <width>311</width>
-       <height>28</height>
       </rect>
      </property>
     </widget>
@@ -131,6 +121,44 @@
       <string>Timer</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="patient_btn">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>40</y>
+       <width>61</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Browse</string>
+     </property>
+    </widget>
+    <widget class="QPlainTextEdit" name="patient_file">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>40</y>
+       <width>241</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="lineWidth">
+      <number>1</number>
+     </property>
+     <property name="midLineWidth">
+      <number>0</number>
+     </property>
+     <property name="lineWrapMode">
+      <enum>QPlainTextEdit::WidgetWidth</enum>
+     </property>
+     <property name="centerOnScroll">
+      <bool>true</bool>
+     </property>
+    </widget>
    </widget>
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
@@ -171,16 +199,6 @@
        <y>470</y>
        <width>311</width>
        <height>121</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QFontComboBox" name="fontComboBox_2">
-     <property name="geometry">
-      <rect>
-       <x>30</x>
-       <y>50</y>
-       <width>311</width>
-       <height>28</height>
       </rect>
      </property>
     </widget>
@@ -241,6 +259,35 @@
      </property>
      <property name="text">
       <string>Timer</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="HC_btn">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>40</y>
+       <width>61</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Browse</string>
+     </property>
+    </widget>
+    <widget class="QPlainTextEdit" name="HC_file">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>40</y>
+       <width>241</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="lineWrapMode">
+      <enum>QPlainTextEdit::WidgetWidth</enum>
      </property>
     </widget>
    </widget>
@@ -309,8 +356,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1012</width>
-     <height>22</height>
+     <width>1067</width>
+     <height>27</height>
     </rect>
    </property>
    <property name="contextMenuPolicy">

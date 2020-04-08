@@ -1,7 +1,6 @@
 import sys
 from WalkingPatternAnalyseTool import PdVisualization
-from PyQt5.QtWidgets import QApplication, QMainWindow
-
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QFileDialog
 import sys, os, subprocess, time, shutil, signal
 import atexit
 
@@ -21,6 +20,10 @@ pro2 = None
 # horizontalSlider_2
 t1 = 0
 t2 = 0
+
+file_1 = None
+file_2 = None
+file_for = 'P'   # file for patient or HC
 
 class VideoWindow(Qt.QGraphicsView):
     def __init__(self, viewWin, dirName, st, slider, parent=None):
@@ -78,10 +81,45 @@ class VideoWindow(Qt.QGraphicsView):
                 # self.timer.stop()
 
 
+class FileWindow(QWidget):
+
+    def __init__(self):
+        super().__init__()
+        self.title = 'Choose file dialogs'
+        self.left = 100
+        self.top = 100
+        self.width = 720
+        self.height = 560
+        self.initUI()
+
+    def initUI(self):
+        self.setWindowTitle(self.title)
+        self.setGeometry(self.left, self.top, self.width, self.height)
+
+        self.openFileNameDialog()
+        self.close()
+
+
+    def openFileNameDialog(self):
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        fileName, _ = QFileDialog.getOpenFileName(self, "QFileDialog.getOpenFileName()", "",
+                                                  "All Files (*);;Python Files (*.py)", options=options)
+        global file_for, file_1, file_2, ui
+        if file_for == 'P' :
+            ui.patient_file.setPlainText(fileName)
+            file_1 = fileName
+        else:
+            file_2 = fileName
+            ui.HC_file.setPlainText(fileName)
+
+
+
 
 
 def startVis():
     print("start!")
+
 
     if os.path.exists(f1):
         shutil.rmtree(f1)
@@ -90,7 +128,11 @@ def startVis():
         shutil.rmtree(f2)
     os.makedirs(f2)
 
-    global pro1, pro2, start_Left,start_Right, ui
+    global pro1, pro2, start_Left,start_Right, ui, file_1, file_2
+
+    print(file_1)
+    print(file_2)
+
     pro1 = subprocess.Popen("blender -b untitled.blend -x 1 -o //"+f1+"/render -s 10 -e 500 -a",  stdout=subprocess.DEVNULL)
     pro2 = subprocess.Popen("blender -b untitled2.blend -x 1 -o //"+f2+"/render -s 10 -e 500 -a",  stdout=subprocess.DEVNULL)
     ui.horizontalSlider.setMaximum(490)
@@ -151,10 +193,19 @@ def pauseRight():
         start_Right = 1
 
 
+def openFiles_P():
+    global file_for
+    file_for = 'P'
+    ex = FileWindow()
+
+def openFiles_HC():
+    global file_for
+    file_for = 'HC'
+    ex = FileWindow()
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     MainWindow = QMainWindow()
-
 
     if os.path.exists(f1):
         shutil.rmtree(f1)
@@ -165,6 +216,11 @@ if __name__ == '__main__':
 
     ui = PdVisualization.Ui_mainWindow()
     ui.setupUi(MainWindow)
+    # choose files
+    ui.patient_btn.clicked.connect( openFiles_P )
+    ui.HC_btn.clicked.connect( openFiles_HC )
+
+    # visualization window
     ui.graphicsView = VideoWindow( ui.graphicsView, f1, 0, ui.horizontalSlider)
     ui.graphicsView_2 = VideoWindow( ui.graphicsView_2, f2, 1, ui.horizontalSlider_2)
 
@@ -184,6 +240,5 @@ if __name__ == '__main__':
 
     atexit.register(exit_handler)
     sys.exit(app.exec_())
-
 
 
