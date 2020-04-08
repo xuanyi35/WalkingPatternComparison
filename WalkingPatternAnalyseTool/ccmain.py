@@ -3,9 +3,13 @@ from WalkingPatternAnalyseTool import PdVisualization
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QFileDialog, QDialog,QLabel, QVBoxLayout, QDialogButtonBox
 import sys, os, subprocess, time, shutil, signal
 import atexit
-
-
-from PyQt5 import Qt, QtCore
+import numpy as np
+from PyQt5 import Qt, QtCore, QtWidgets
+from matplotlib.backends.backend_qt5agg import FigureCanvas
+import matplotlib as mpl
+import matplotlib.figure as mpl_fig
+import matplotlib.animation as anim
+# from matplotlib.backends.qt_compat import QtCore, QtWidgets
 
 # control start or stop for left and right
 start_Left = 0
@@ -38,8 +42,6 @@ class VideoWindow(Qt.QGraphicsView):
         self.dirname = dirName
         self.st = st
         self.slider = slider
-
-
 
 
     def on_timeout(self):
@@ -132,6 +134,73 @@ class CustomDialog(QDialog):
         self.layout.addWidget(self.info)
         # self.layout.addWidget( self.buttonBox)
         self.setLayout(self.layout)
+
+
+
+
+class SignalWindow(Qt.QGraphicsView):
+    def __init__(self, viewWin, parent=None):
+        Qt.QGraphicsView.__init__(self, parent)
+        # 1. Window settings
+        self.grview = viewWin
+        self.scene = Qt.QGraphicsScene()
+        print(viewWin.rect())
+
+        # 2. Place the matplotlib figure
+        self.myFig = MyFigureCanvas(x_len=200, y_range=[0, 100], interval=20)
+        self.scene.addWidget(self.myFig )
+        # self.scene.setSceneRect(QtCore.QRectF(viewWin.rect()))
+
+        self.grview.fitInView(self.scene.itemsBoundingRect())
+
+        self.grview.setScene(self.scene)
+
+        # 3. Show
+        self.grview.show()
+        return
+
+class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
+    '''
+    This is the FigureCanvas in which the live plot is drawn.
+
+    '''
+
+    def __init__(self, x_len, y_range, interval):
+        '''
+        :param x_len:       The nr of data points shown in one plot.
+        :param y_range:     Range on y-axis.
+        :param interval:    Get a new datapoint every .. milliseconds.
+
+        '''
+        FigureCanvas.__init__(self, mpl_fig.Figure())
+        # Range settings
+        self._x_len_ = x_len
+        self._y_range_ = y_range
+
+        # Store two lists _x_ and _y_
+        x = list(range(0, x_len))
+        y = [0] * x_len
+
+        # Store a figure and ax
+        self._ax_ = self.figure.subplots()
+        self._ax_.set_ylim(ymin=self._y_range_[0], ymax=self._y_range_[1])
+        self._line_, = self._ax_.plot(x, y)
+
+        # Call superclass constructors
+        anim.FuncAnimation.__init__(self, self.figure, self._update_canvas_, fargs=(y,), interval=interval,
+                                    blit=True)
+        return
+
+    def _update_canvas_(self, i, y) -> None:
+        '''
+        This function gets called regularly by the timer.
+
+        '''
+        y.append(round(get_next_datapoint(), 2))  # Add new datapoint
+        y = y[-self._x_len_:]  # Truncate list _y_
+        self._line_.set_ydata(y)
+        return self._line_,
+
 
 def startVis():
     print("start!")
@@ -226,6 +295,22 @@ def openFiles_HC():
     file_for = 'HC'
     ex = FileWindow()
 
+
+
+# Data source
+# ------------
+n = np.linspace(0, 499, 500)
+d = 50 + 25 * (np.sin(n / 8.3)) + 10 * (np.sin(n / 7.5)) - 5 * (np.sin(n / 1.5))
+i = 0
+def get_next_datapoint():
+    global i
+    i += 1
+    if i > 499:
+        i = 0
+    return d[i]
+
+
+
 if __name__ == '__main__':
 
     if os.path.exists(f1):
@@ -260,6 +345,10 @@ if __name__ == '__main__':
     # pause and release
     ui.toolButton_5.clicked.connect(pauseLeft)
     ui.toolButton_8.clicked.connect(pauseRight)
+
+    #signals window
+    ui.graphicsView_3 = SignalWindow(ui.graphicsView_3)
+
 
 
     MainWindow.show()
