@@ -120,28 +120,18 @@ class CustomDialog(QDialog):
         super(CustomDialog, self).__init__(*args, **kwargs)
 
         self.setWindowTitle("Info Box")
-        self.resize(100, 100)
+        self.resize(150, 150)
         self.info = QLabel("Wait, we are generating data.....")
-        QBtn = QDialogButtonBox.Ok | QDialogButtonBox.Cancel
+        # QBtn = QDialogButtonBox.Ok | QDialogButtonBox.Cancel
 
-        self.buttonBox = QDialogButtonBox(QBtn)
-        self.buttonBox.accepted.connect(self.accept)
-        self.buttonBox.rejected.connect(self.reject)
+        # self.buttonBox = QDialogButtonBox(QBtn)
+        # self.buttonBox.accepted.connect(self.accept)
+        # self.buttonBox.rejected.connect(self.reject)
 
         self.layout = QVBoxLayout()
         self.layout.addWidget(self.info)
-        self.layout.addWidget( self.buttonBox)
+        # self.layout.addWidget( self.buttonBox)
         self.setLayout(self.layout)
-        self.exec()
-
-        # self._timer_painter = QtCore.QTimer(self)
-        # self._timer_painter.start(5000)
-        # self._timer_painter.timeout.connect(self.timeoutHandler)
-        time.sleep(5)
-
-    def timeoutHandler(self):
-        print("time out")
-        self.accept
 
 def startVis():
     print("start!")
@@ -164,8 +154,10 @@ def startVis():
     ui.horizontalSlider.setMaximum(490)
     ui.horizontalSlider_2.setMaximum(490)
 
+    # wait for 7 seconds and close
     d = CustomDialog()
-    # d.setWindowModality( QtCore.Qt.ApplicationModal)
+    QtCore.QTimer.singleShot(7000, d.close )
+    d.exec_()
 
 
     start_Left = 1
