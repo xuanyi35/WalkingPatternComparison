@@ -62,7 +62,7 @@ class VideoWindow(Qt.QGraphicsView):
                 file = self.listFiles[self.n]
                 pixmap = Qt.QPixmap(self.dirname +"\{}".format(file))
                 self.scene.addPixmap(pixmap)
-                self.grview.fitInView(self.scene.itemsBoundingRect(), QtCore.Qt.KeepAspectRatio)
+                self.grview.fitInView(self.scene.sceneRect(), QtCore.Qt.KeepAspectRatio)
                 self.grview.setScene(self.scene)
                 self.slider.setValue(self.n)
                 self.n += 1
@@ -74,7 +74,7 @@ class VideoWindow(Qt.QGraphicsView):
                 self.scene.clear()
                 pixmap = Qt.QPixmap('wait.png')
                 self.scene.addPixmap(pixmap)
-                self.grview.fitInView(self.scene.itemsBoundingRect())
+                self.grview.fitInView(self.scene.sceneRect(), QtCore.Qt.KeepAspectRatio)
                 self.grview.setScene(self.scene)
                 self.slider.setValue(self.n)
                 print("wait", self.dirname)
@@ -144,18 +144,20 @@ class SignalWindow(Qt.QGraphicsView):
         # 1. Window settings
         self.grview = viewWin
         self.scene = Qt.QGraphicsScene()
-        print(viewWin.rect())
+        # print(viewWin.rect())
 
         # 2. Place the matplotlib figure
         self.myFig = MyFigureCanvas(x_len=200, y_range=[0, 100], interval=20)
         self.scene.addWidget(self.myFig )
         # self.scene.setSceneRect(QtCore.QRectF(viewWin.rect()))
-
-        self.grview.fitInView(self.scene.itemsBoundingRect())
+        # self.grview.fitInView(self.scene.itemsBoundingRect())
 
         self.grview.setScene(self.scene)
 
         # 3. Show
+        # print(self.grview.mapToScene(self.grview.rect()).boundingRect())
+        # self.grview.fitInView(self.grview.mapToScene(self.grview.rect()).boundingRect())
+        self.grview.fitInView(0, 0, 200, 100)
         self.grview.show()
         return
 
@@ -246,7 +248,7 @@ def exit_handler():
     # if pro2 != None:
     #     time.sleep(0.1)
     #     pro2.kill()
-
+    time.sleep(0.1)
     if os.path.exists(f1):
         shutil.rmtree(f1, ignore_errors=True)
     if os.path.exists(f2):
@@ -323,7 +325,7 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     MainWindow = QMainWindow()
 
-
+    MainWindow.setWindowFlags(QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
 
     ui = PdVisualization.Ui_mainWindow()
     ui.setupUi(MainWindow)
