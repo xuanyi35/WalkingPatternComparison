@@ -361,18 +361,18 @@ if __name__ == '__main__':
 
     # visualization window
     ui.graphicsView = VideoWindow( ui.graphicsView, f1, 0, ui.horizontalSlider)
-    ui.graphicsView_2 = VideoWindow( ui.graphicsView_2, f2, 1, ui.horizontalSlider_2)
+    ui.graphicsView_2 = VideoWindow( ui.graphicsView_2, f2, 1, ui.horizontalSlider_HC)
 
     #  start visualization
-    ui.pushButton.clicked.connect(startVis)
+    ui.btn_start.clicked.connect(startVis)
 
     # read slider value
     ui.horizontalSlider.sliderReleased.connect(leftSliderReleased)
-    ui.horizontalSlider_2.sliderReleased.connect(rightSliderReleased)
+    ui.horizontalSlider_HC.sliderReleased.connect(rightSliderReleased)
 
     # pause and release
-    ui.toolButton_5.clicked.connect(pauseLeft)
-    ui.toolButton_8.clicked.connect(pauseRight)
+    ui.toolButton_pauseLeft.clicked.connect(pauseLeft)
+    ui.toolButton_pauseRight.clicked.connect(pauseRight)
 
     #signals window
     ui.graphicsView_3 = SignalWindow(viewWin=ui.graphicsView_3,

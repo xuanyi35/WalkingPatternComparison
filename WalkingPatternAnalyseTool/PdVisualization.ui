@@ -111,23 +111,23 @@
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QToolButton" name="toolButton_6">
+        <widget class="QToolButton" name="toolButton_pauseLeft">
          <property name="text">
-          <string>&gt;&gt;&gt;</string>
+          <string>&lt;&lt;&lt;</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="toolButton_5">
+        <widget class="QToolButton" name="toolButton_pause">
          <property name="text">
           <string>o</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="toolButton_4">
+        <widget class="QToolButton" name="toolButton_pauseRight">
          <property name="text">
-          <string>&lt;&lt;&lt;</string>
+          <string>&gt;&gt;&gt;</string>
          </property>
         </widget>
        </item>
@@ -189,7 +189,7 @@
      <property name="title">
       <string/>
      </property>
-     <widget class="QSlider" name="horizontalSlider_3">
+     <widget class="QSlider" name="horizontalSlider_HC">
       <property name="geometry">
        <rect>
         <x>30</x>
@@ -226,23 +226,23 @@
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
-        <widget class="QToolButton" name="toolButton_10">
+        <widget class="QToolButton" name="toolButton_pauseLeft_HC">
          <property name="text">
-          <string>&gt;&gt;&gt;</string>
+          <string>&lt;&lt;&lt;</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="toolButton_11">
+        <widget class="QToolButton" name="toolButton_pause_HC">
          <property name="text">
           <string>o</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="toolButton_12">
+        <widget class="QToolButton" name="toolButton_pauseRight_HC">
          <property name="text">
-          <string>&lt;&lt;&lt;</string>
+          <string>&gt;&gt;&gt;</string>
          </property>
         </widget>
        </item>
@@ -433,8 +433,8 @@
            <property name="font">
             <font>
              <family>Helvetica</family>
-             <weight>75</weight>
-             <bold>true</bold>
+             <weight>50</weight>
+             <bold>false</bold>
             </font>
            </property>
            <property name="text">
@@ -498,8 +498,8 @@
            <property name="font">
             <font>
              <family>Helvetica</family>
-             <weight>75</weight>
-             <bold>true</bold>
+             <weight>50</weight>
+             <bold>false</bold>
             </font>
            </property>
            <property name="text">
