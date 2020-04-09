@@ -11,23 +11,35 @@ class VtkMovingObj:
 
     def __init__(self, initial_pos):
         reader = vtk.vtkSTLReader()
-        reader.SetFileName("Giratina.stl")
+        reader.SetFileName("panter.stl")
+
+        # source = vtk.vtkSphereSource()
+        # source.SetRadius(3.0)
+        cube = vtk.vtkCubeSource()
+        cube.SetXLength(5)
+        cube.SetYLength(4)
+        cube.SetZLength(3)
 
         self.vtkPolyData = vtk.vtkPolyData()
-        mapper = vtk.vtkPolyDataMapper()
-        mapper.SetInputConnection(reader.GetOutputPort())
+        self.mapper = vtk.vtkPolyDataMapper()
+        # self.mapper.SetInputConnection(reader.GetOutputPort())
+        self.mapper.SetInputConnection(cube.GetOutputPort())
+
         
         self.vtkActor = vtk.vtkActor()
-        self.vtkActor.SetMapper(mapper)
+        self.vtkActor.SetMapper(self.mapper)
         self.vtkActor.SetPosition( initial_pos )
-        #self.vtkActor.SetScale(0.5,0.5,0.5)
+        # self.vtkActor.SetScale(0.5,0.5,0.5)
 
 
         # adjust the position
-        transform = vtk.vtkTransform() 
-        transform.Translate(self.vtkActor.GetCenter())
-        transform.RotateX(-90)
-        self.vtkActor.SetUserTransform(transform)
+        # translate(scale(translate(model, -P)), P)
+        # transform = vtk.vtkTransform() 
+        # transform.Translate( self.vtkActor.GetCenter())
+        # transform.RotateX(-90)
+        # transform.RotateZ(90)
+        # transform.Scale(0.01, 0.01, 0.01)
+        # self.vtkActor.SetUserTransform(transform)
 
     def changePosition(self, position):
         self.vtkActor.SetPosition( position )
@@ -39,7 +51,7 @@ class VtkMovingObj:
 
 
 class MoveFootTimerCallback():
-    def __init__(self, renderer, movingObj, iterations, positions):
+    def __init__(self, renderer, movingObj, iterations, positions,movingObj2, position2 ):
         self.iterations = iterations
         self.renderer = renderer
         self.cam = None
@@ -48,31 +60,49 @@ class MoveFootTimerCallback():
         self.movingObj = movingObj
         self.positions = positions
         self.posCounter = 0
+        self.movingObj2 = movingObj2
+        self.positions2 = position2
+
+        
 
     def execute(self, iren, event):
         if self.iterations == 0:
             self.movingObj.changePosition(self.positions[self.posCounter])
-            self.iterations = 2
-            self.posCounter += 1
-            #self.campos += self.positions[self.posCounter]
-            #self.camFoc += self.positions[self.posCounter] 
+            self.movingObj2.changePosition(self.positions2[self.posCounter])
 
-            # self.renderer.ResetCamera()
-            # self.getCamPos()
+            self.iterations = 10
+            self.posCounter += 1
             
+
+            # if self.foot == "L" and self.posCounter < len(self.positions):
+            self.renderer.ResetCamera()
+            # self.cam.SetFocalPoint(  (self.positions[self.posCounter] + self.positions2[self.posCounter])/2 ) 
+            self.camFoc = self.cam.GetFocalPoint()
+            self.campos = self.cam.GetPosition()
+            # self.cam.SetPosition(  self.campos - (0,0,0) )
+
         if self.posCounter == 0:
             self.renderer.ResetCamera()
             self.getCamPos()
            
         if self.posCounter == len(self.positions):
             iren.DestroyTimer(self.timerId)
+            # self.points.SetNumberOfPoints(self.posCounter)
+            # self.lines.InsertNextCell(self.posCounter )
+
 
         self.iterations -= 1
 
         self.renderer.SetActiveCamera(self.cam)
-        self.renderer.AddActor( self.movingObj.vtkActor)       
-        iren.GetRenderWindow().Render()
 
+
+        self.renderer.AddActor(self.movingObj.vtkActor)
+        self.renderer.AddActor(self.movingObj2.vtkActor)
+
+
+
+        iren.GetRenderWindow().Render()
+        
     def changeCamPos(self):
         self.cam.SetPosition(self.campos )
         self.cam.SetFocalPoint(self.camFoc  )
@@ -117,30 +147,6 @@ if __name__ == "__main__":
     renderWindow.SetSize(800, 800)
 
     renderer.SetBackground(0.1, 0.2, 0.4)
-    # Read the image
-    # jpeg_reader = vtk.vtkJPEGReader()
-    # if not jpeg_reader.CanReadFile('cat.jpg'):
-    #     print("Error reading file %s" % 'cat.jpg')
-        
-
-    # Create a renderer to display the image in the background
-    # background_renderer = vtk.vtkRenderer()
-    # jpeg_reader.SetFileName('cat.jpg')
-    # jpeg_reader.Update()
-    # image_data = jpeg_reader.GetOutput()
-    # Create an image actor to display the image
-    # image_actor = vtk.vtkImageActor()
-    # image_actor.SetInputData(image_data)
-
-
-# Set up the render window and renderers such that there is
-    # a background layer and a foreground layer
-    # background_renderer.SetLayer(0)
-    # background_renderer.InteractiveOff()
-    # background_renderer.AddActor(image_actor)
-    # renderer.SetLayer(1)
-    # renderWindow.SetNumberOfLayers(2)
-    # renderWindow.AddRenderer(background_renderer)
     renderWindow.AddRenderer(renderer)
 
 
@@ -166,37 +172,26 @@ if __name__ == "__main__":
     
 
     # Initialize a timer for the animation
-    # mat = scipy.io.loadmat('disp.mat')['linPosHP']
+
     mat = scipy.io.loadmat('../WalkingPositionData/linePos_3603_20191220.mat')['linPos']
+    mat = mat[::10]
+
+    mat2 = scipy.io.loadmat('../WalkingPositionData/linePos_3593_20191220-095327.mat')['linPos']
+    mat2 = mat2[::10]
     
 
-    print(mat)
-    points = vtk.vtkPoints()
-    points.SetNumberOfPoints(len(mat))
-    lines = vtk.vtkCellArray()
-    lines.InsertNextCell(len(mat))
+    left_foot = VtkMovingObj( mat[0])
+    right_foot = VtkMovingObj( mat2[0])
 
-    for i in range(len(mat)):
-        points.SetPoint(i, mat[i][0],mat[i][1],mat[i][2])
-        lines.InsertCellPoint(i)
-    polygon = vtk.vtkPolyData()
-    polygon.SetPoints(points)
-    polygon.SetLines(lines)
-    polygonMapper = vtk.vtkPolyDataMapper()
-    polygonMapper.SetInputData(polygon)
-    polygonMapper.Update()
-    polygonActor = vtk.vtkActor()
-    polygonActor.SetMapper(polygonMapper)
-    renderer.AddActor(polygonActor)
-
-
-
-
-    people = VtkMovingObj( mat[0])
-    moveFootTimerCallback = MoveFootTimerCallback(renderer,people, 2, mat)
+    moveFootTimerCallback = MoveFootTimerCallback(renderer, left_foot, 100, mat, right_foot,mat2 )
     renderWindowInteractor.AddObserver('TimerEvent', moveFootTimerCallback.execute)
-    timerId = renderWindowInteractor.CreateRepeatingTimer(10)
-    moveFootTimerCallback.timerId = timerId
+    timerId1 = renderWindowInteractor.CreateRepeatingTimer(10)
+    moveFootTimerCallback.timerId = timerId1
+
+    # moveFootTimerCallback2 = MoveFootTimerCallback(renderer, right_foot, 10, mat2,"R")
+    # renderWindowInteractor.AddObserver('TimerEvent', moveFootTimerCallback2.execute)
+    # # timerId2 = renderWindowInteractor.CreateRepeatingTimer(10)
+    # moveFootTimerCallback2.timerId = timerId1
 
     # Begin Interaction
     renderWindow.Render()
