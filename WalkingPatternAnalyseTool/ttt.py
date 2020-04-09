@@ -56,6 +56,9 @@ class MoveFootTimerCallback():
             self.posCounter += 1
             #self.campos += self.positions[self.posCounter]
             #self.camFoc += self.positions[self.posCounter] 
+
+            # self.renderer.ResetCamera()
+            # self.getCamPos()
             
         if self.posCounter == 0:
             self.renderer.ResetCamera()
@@ -113,30 +116,31 @@ if __name__ == "__main__":
     renderWindow.AddRenderer(renderer)
     renderWindow.SetSize(800, 800)
 
+    renderer.SetBackground(0.1, 0.2, 0.4)
     # Read the image
-    jpeg_reader = vtk.vtkJPEGReader()
-    if not jpeg_reader.CanReadFile('cat.jpg'):
-        print("Error reading file %s" % 'cat.jpg')
+    # jpeg_reader = vtk.vtkJPEGReader()
+    # if not jpeg_reader.CanReadFile('cat.jpg'):
+    #     print("Error reading file %s" % 'cat.jpg')
         
 
     # Create a renderer to display the image in the background
-    background_renderer = vtk.vtkRenderer()
-    jpeg_reader.SetFileName('cat.jpg')
-    jpeg_reader.Update()
-    image_data = jpeg_reader.GetOutput()
+    # background_renderer = vtk.vtkRenderer()
+    # jpeg_reader.SetFileName('cat.jpg')
+    # jpeg_reader.Update()
+    # image_data = jpeg_reader.GetOutput()
     # Create an image actor to display the image
-    image_actor = vtk.vtkImageActor()
-    image_actor.SetInputData(image_data)
+    # image_actor = vtk.vtkImageActor()
+    # image_actor.SetInputData(image_data)
 
 
 # Set up the render window and renderers such that there is
     # a background layer and a foreground layer
-    background_renderer.SetLayer(0)
-    background_renderer.InteractiveOff()
-    background_renderer.AddActor(image_actor)
-    renderer.SetLayer(1)
-    renderWindow.SetNumberOfLayers(2)
-    renderWindow.AddRenderer(background_renderer)
+    # background_renderer.SetLayer(0)
+    # background_renderer.InteractiveOff()
+    # background_renderer.AddActor(image_actor)
+    # renderer.SetLayer(1)
+    # renderWindow.SetNumberOfLayers(2)
+    # renderWindow.AddRenderer(background_renderer)
     renderWindow.AddRenderer(renderer)
 
 
@@ -162,7 +166,31 @@ if __name__ == "__main__":
     
 
     # Initialize a timer for the animation
-    mat = scipy.io.loadmat('disp.mat')['linPosHP']
+    # mat = scipy.io.loadmat('disp.mat')['linPosHP']
+    mat = scipy.io.loadmat('../WalkingPositionData/linePos_3603_20191220.mat')['linPos']
+    
+
+    print(mat)
+    points = vtk.vtkPoints()
+    points.SetNumberOfPoints(len(mat))
+    lines = vtk.vtkCellArray()
+    lines.InsertNextCell(len(mat))
+
+    for i in range(len(mat)):
+        points.SetPoint(i, mat[i][0],mat[i][1],mat[i][2])
+        lines.InsertCellPoint(i)
+    polygon = vtk.vtkPolyData()
+    polygon.SetPoints(points)
+    polygon.SetLines(lines)
+    polygonMapper = vtk.vtkPolyDataMapper()
+    polygonMapper.SetInputData(polygon)
+    polygonMapper.Update()
+    polygonActor = vtk.vtkActor()
+    polygonActor.SetMapper(polygonMapper)
+    renderer.AddActor(polygonActor)
+
+
+
 
     people = VtkMovingObj( mat[0])
     moveFootTimerCallback = MoveFootTimerCallback(renderer,people, 2, mat)
