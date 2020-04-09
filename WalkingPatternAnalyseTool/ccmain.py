@@ -356,8 +356,8 @@ if __name__ == '__main__':
     ui = PdVisualization.Ui_mainWindow()
     ui.setupUi(MainWindow)
     # choose files
-    ui.patient_btn.clicked.connect( openFiles_P )
-    ui.HC_btn.clicked.connect( openFiles_HC )
+    ui.btn_flist_1.clicked.connect( openFiles_P )
+    ui.btn_flist_5.clicked.connect( openFiles_HC )
 
     # visualization window
     ui.graphicsView = VideoWindow( ui.graphicsView, f1, 0, ui.horizontalSlider)
