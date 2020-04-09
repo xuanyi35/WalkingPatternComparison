@@ -10,6 +10,7 @@ import matplotlib as mpl
 import matplotlib.figure as mpl_fig
 import matplotlib.animation as anim
 # from matplotlib.backends.qt_compat import QtCore, QtWidgets
+import scipy.io as sio
 
 # control start or stop for left and right
 start_Left = 0
@@ -24,6 +25,8 @@ pro2 = None
 # horizontalSlider_2
 t1 = 0
 t2 = 0
+
+i = 0
 
 file_1 = None
 file_2 = None
@@ -139,15 +142,18 @@ class CustomDialog(QDialog):
 
 
 class SignalWindow(Qt.QGraphicsView):
-    def __init__(self, viewWin, parent=None):
+    def __init__(self, viewWin, signal_dir, parent=None):
         Qt.QGraphicsView.__init__(self, parent)
         # 1. Window settings
         self.grview = viewWin
+        self.signal_dir = signal_dir
         self.scene = Qt.QGraphicsScene()
         # print(viewWin.rect())
 
         # 2. Place the matplotlib figure
-        self.myFig = MyFigureCanvas(x_len=200, y_range=[0, 100], interval=20)
+        # Todo: x_len is the length of the data
+        # Todo: y_range should be adjust itself, x should be change with timer, interval should be adjust with video
+        self.myFig = MyFigureCanvas(x_len=200, y_range=[-300, 300], interval=20, signal_dir=self.signal_dir )
         self.scene.addWidget(self.myFig )
         # self.scene.setSceneRect(QtCore.QRectF(viewWin.rect()))
         # self.grview.fitInView(self.scene.itemsBoundingRect())
@@ -167,7 +173,7 @@ class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
 
     '''
 
-    def __init__(self, x_len, y_range, interval):
+    def __init__(self, x_len, y_range, interval, signal_dir):
         '''
         :param x_len:       The nr of data points shown in one plot.
         :param y_range:     Range on y-axis.
@@ -178,19 +184,23 @@ class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
         # Range settings
         self._x_len_ = x_len
         self._y_range_ = y_range
+        self.signal_dir = signal_dir
 
         # Store two lists _x_ and _y_
-        x = list(range(0, x_len))
-        y = [0] * x_len
+        x = [[i,i,i] for i in range(0, x_len) ]
+        x = np.array(x)
+        y = [[0 for i in range(3)] for j in range(0, x_len)]
+        y = np.array(y)
 
         # Store a figure and ax
-        self._ax_ = self.figure.subplots()
+        self._ax_ = self.figure.subplots() # plot 1 figure
         self._ax_.set_ylim(ymin=self._y_range_[0], ymax=self._y_range_[1])
-        self._line_, = self._ax_.plot(x, y)
 
-        # Call superclass constructors
-        anim.FuncAnimation.__init__(self, self.figure, self._update_canvas_, fargs=(y,), interval=interval,
-                                    blit=True)
+        self._lineX_, self._lineY_, self._lineZ_, = self._ax_.plot(x[:,0].tolist(), y[:,0].tolist(), 'r--',
+                                                                   x[:,1].tolist(), y[:,1].tolist(), 'bs',
+                                                                   x[:,2].tolist(), y[:,2].tolist(), 'g^')
+
+        anim.FuncAnimation.__init__(self, self.figure, self._update_canvas_, fargs=(y.tolist(),), interval=interval, blit=True)
         return
 
     def _update_canvas_(self, i, y) -> None:
@@ -198,10 +208,26 @@ class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
         This function gets called regularly by the timer.
 
         '''
-        y.append(round(get_next_datapoint(), 2))  # Add new datapoint
-        y = y[-self._x_len_:]  # Truncate list _y_
-        self._line_.set_ydata(y)
-        return self._line_,
+        # y.append(round(self._get_next_datapoint(), 5))  # Add new datapoint
+        y.append(self._get_next_datapoint()) # Add new datapoint
+        y = y[-self._x_len_:]  # Truncate list _y_ : avoid broadcast error
+
+        y = np.array(y)
+        self._lineX_.set_ydata(y[:,0].tolist())
+        self._lineY_.set_ydata(y[:,1].tolist())
+        self._lineZ_.set_ydata(y[:,2].tolist())
+
+        return self._lineX_, self._lineY_, self._lineZ_
+
+    def _get_next_datapoint(self):
+        data = sio.loadmat(self.signal_dir)
+        global i
+        i += 1
+        if i > len(data['linPos'])-1:
+            i = 0
+
+        return data['linPos'][i]
+
 
 
 def startVis():
@@ -301,15 +327,15 @@ def openFiles_HC():
 
 # Data source
 # ------------
-n = np.linspace(0, 499, 500)
-d = 50 + 25 * (np.sin(n / 8.3)) + 10 * (np.sin(n / 7.5)) - 5 * (np.sin(n / 1.5))
-i = 0
-def get_next_datapoint():
-    global i
-    i += 1
-    if i > 499:
-        i = 0
-    return d[i]
+# n = np.linspace(0, 499, 500)
+# d = 50 + 25 * (np.sin(n / 8.3)) + 10 * (np.sin(n / 7.5)) - 5 * (np.sin(n / 1.5))
+# i = 0
+# def get_next_datapoint_test():
+#     global i
+#     i += 1
+#     if i > 499:
+#         i = 0
+#     return d[i]
 
 
 
@@ -349,8 +375,10 @@ if __name__ == '__main__':
     ui.toolButton_8.clicked.connect(pauseRight)
 
     #signals window
-    ui.graphicsView_3 = SignalWindow(ui.graphicsView_3)
-
+    ui.graphicsView_3 = SignalWindow(viewWin=ui.graphicsView_3,
+                                     signal_dir="../WalkingPositionData/linePos_3593_20191220-095327.mat")
+    ui.graphicsView_4 = SignalWindow(viewWin=ui.graphicsView_4,
+                                     signal_dir="../WalkingPositionData/linePos_3603_20191220.mat")
 
 
     MainWindow.show()
