@@ -1,6 +1,7 @@
 import sys
 from WalkingPatternAnalyseTool import PdVisualization
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QFileDialog, QDialog,QLabel, QHBoxLayout, QVBoxLayout, QDialogButtonBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QFileDialog, QDialog,QLabel, QHBoxLayout, QVBoxLayout,\
+    QDialogButtonBox
 import sys, os, subprocess, time, shutil, signal
 import atexit
 import numpy as np
@@ -158,17 +159,11 @@ class SignalWindow(Qt.QGraphicsView):
         # 2. Place the matplotlib figure
         # Todo: x_len is the length of the data
         # Todo: y_range should be adjust itself, x should be change with timer, interval should be adjust with video
-        # self.myFig = MyFigureCanvas(x_len=300, y_range=[-1000, 1000], interval=20, signal_dir=self.signal_dir)
         self.myFig = []
-        self.myFig.append( MyFigureCanvas(fcode=fcode_left, x_len=300, y_range=[-1000, 1000], interval=20,
+        self.myFig.append( MyFigureCanvas(fcode=fcode_left, x_len=300, y_range=[-1200, 1200], interval=20,
                                     signal_dir=self.signal_dir))
-        self.myFig.append(MyFigureCanvas(fcode=fcode_right, x_len=300, y_range=[-1000, 1000], interval=20,
+        self.myFig.append(MyFigureCanvas(fcode=fcode_right, x_len=300, y_range=[-1200, 1200], interval=20,
                                     signal_dir=self.signal_dir))
-        # self.scene.addItem(self.myFig[0])
-        # self.scene.addItem(self.myFig[1])
-
-        # self.scene.addWidget(self.myFig[0])
-        # self.scene.addWidget(self.myFig[1])
         # self.scene.setSceneRect(QtCore.QRectF(viewWin.rect()))
         # self.grview.fitInView(self.scene.itemsBoundingRect())
 
@@ -208,15 +203,20 @@ class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
         self.data = sio.loadmat(self.signal_dir)  # TODO: where to load: here or _get_next_datapoint()
 
         # Store a figure and ax
-        # self.figure = fig
         ax = self.figure.subplots() # plot 1 figure
-        # self.anim = {fcode_left: anim.FuncAnimation, fcode_right: anim.FuncAnimation}
-        self._animat_axs_(ax, fcode)
 
-        # self._animat_axs_(axs[0], fcode_left)
-        # self._animat_axs_(axs[1], fcode_right)
-        # print("axs[0]:", axs[0])
-        # print("axs[1]:", axs[1])
+        # self.figure.xticks(fontsize=7)
+
+
+        if fcode == fcode_left:
+            ax.set_title('Acceleration-Left', fontsize=7)
+        else:
+            ax.set_title('Acceleration-Right', fontsize=7)
+        ax.set_xlabel('time [1/128s]', fontsize=7)
+        ax.set_ylabel('Acceleration', fontsize=7, labelpad=5)
+        ax.tick_params(labelsize=5)
+        # ax.text(frontsize = 7)
+        self._animat_axs_(ax, fcode)
 
         return
 
@@ -235,19 +235,14 @@ class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
                                                                    x[:,1].tolist(), y[:,1].tolist(), 'b',
                                                                    x[:,2].tolist(), y[:,2].tolist(), 'g')
 
-        print("fcode111:", fcode)
-        # self.anim ={fcode_left:anim.FuncAnimation,fcode_right: anim.FuncAnimation }
-        # self.anim[fcode].__init__(self, self.figure, self._update_canvas_, fargs=(y.tolist(),fcode,), interval=self.interval, blit=True)
         anim.FuncAnimation.__init__(self, self.figure, self._update_canvas_, fargs=(y.tolist(), fcode,),
                                   interval=self.interval, blit=True)
-        print("fcode222:", fcode)
         return
 
     def _update_canvas_(self,i, y, fcode) -> None:
         '''
         This function gets called regularly by the timer.
         '''
-        print("fcode333:", fcode)
         y.append(self._get_next_datapoint()[fcode]) # Add new datapoint
         y = y[-self._x_len_:]  # Truncate list _y_ : avoid broadcast error
 
@@ -263,9 +258,7 @@ class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
         i += 1
         if i > len(self.data['linAcc_'+fcode_left])-1 or i > len(self.data['linAcc_'+fcode_right])-1:
             print("signal end!")
-        # print("self.data['linAcc_3593'][i]:", self.data['linAcc_3593'][i])
-        # print("self.data['linAcc_3603'][i]:", self.data['linAcc_3603'][i])
-        # return self.data['linAcc_3593'][i]
+
         return {fcode_left:self.data['linAcc_'+fcode_left][i], fcode_right:self.data['linAcc_'+fcode_right][i]}
 
 
