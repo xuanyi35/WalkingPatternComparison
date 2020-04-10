@@ -249,7 +249,7 @@ def startVis():
     pro1 = subprocess.Popen("blender -b untitled.blend -x 1 -o //"+f1+"/render -s 10 -e 500 -a",  stdout=subprocess.DEVNULL)
     pro2 = subprocess.Popen("blender -b untitled2.blend -x 1 -o //"+f2+"/render -s 10 -e 500 -a",  stdout=subprocess.DEVNULL)
     ui.horizontalSlider.setMaximum(490)
-    ui.horizontalSlider_2.setMaximum(490)
+    ui.horizontalSlider_HC.setMaximum(490)
 
     # wait for 7 seconds and close
     d = CustomDialog()
@@ -292,7 +292,7 @@ def leftSliderReleased():
 
 def rightSliderReleased():
     global t2, ui
-    t2 = ui.horizontalSlider_2.value()
+    t2 = ui.horizontalSlider_HC.value()
 
 
 def pauseLeft():
@@ -371,8 +371,8 @@ if __name__ == '__main__':
     ui.horizontalSlider_HC.sliderReleased.connect(rightSliderReleased)
 
     # pause and release
-    ui.toolButton_pauseLeft.clicked.connect(pauseLeft)
-    ui.toolButton_pauseRight.clicked.connect(pauseRight)
+    ui.toolButton_pause.clicked.connect(pauseLeft)
+    ui.toolButton_pause_HC.clicked.connect(pauseRight)
 
     #signals window
     ui.graphicsView_3 = SignalWindow(viewWin=ui.graphicsView_3,
