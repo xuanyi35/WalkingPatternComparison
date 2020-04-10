@@ -39,13 +39,15 @@ file_1 = None
 file_2 = None
 file_for = 'P'   # file for patient or HC
 
-class VideoWindow(Qt.QGraphicsView):
+class VideoWindow(Qt.QVBoxLayout):
     def __init__(self, viewWin, dirName, st, slider, parent=None):
-        Qt.QGraphicsView.__init__(self, parent)
-        self.grview = viewWin
-        self.vtkWidget = QVTKRenderWindowInteractor(self.grview)
+        # Qt.QGraphicsView.__init__(self, parent)
+        self = viewWin
+        self.frame = Qt.QFrame()
+        self.vtkWidget = QVTKRenderWindowInteractor(self.frame)
+        self.addWidget(self.vtkWidget)
+
         self.vtkRen = vtkWin(self.vtkWidget)
-        self.grview.show()
 
 
 class FileWindow(QWidget):
@@ -322,8 +324,8 @@ if __name__ == '__main__':
     ui.btn_flist_5.clicked.connect( openFiles_HC )
 
     # visualization window
-    ui.graphicsView = VideoWindow( ui.graphicsView, f1, 0, ui.horizontalSlider)
-    ui.graphicsView_2 = VideoWindow( ui.graphicsView_2, f2, 1, ui.horizontalSlider_HC)
+    ui.graphicsView = VideoWindow( ui.vbox, f1, 0, ui.horizontalSlider)
+    ui.graphicsView_2 = VideoWindow( ui.vbox_HC, f2, 1, ui.horizontalSlider_HC)
 
     #  start visualization
     ui.btn_start.clicked.connect(startVis)

@@ -2,11 +2,13 @@
 
 # Form implementation generated from reading ui file 'PdVisualization.ui'
 #
-# Created by: PyQt5 UI code generator 5.9.2
+# Created by: PyQt5 UI code generator 5.14.1
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_mainWindow(object):
     def setupUi(self, mainWindow):
@@ -68,6 +70,12 @@ class Ui_mainWindow(object):
         self.btn_flist_1 = QtWidgets.QPushButton(self.groupBox)
         self.btn_flist_1.setGeometry(QtCore.QRect(500, 30, 31, 31))
         self.btn_flist_1.setObjectName("btn_flist_1")
+        self.verticalLayoutWidget_2 = QtWidgets.QWidget(self.groupBox)
+        self.verticalLayoutWidget_2.setGeometry(QtCore.QRect(19, 89, 511, 361))
+        self.verticalLayoutWidget_2.setObjectName("verticalLayoutWidget_2")
+        self.vbox = QtWidgets.QVBoxLayout(self.verticalLayoutWidget_2)
+        self.vbox.setContentsMargins(0, 0, 0, 0)
+        self.vbox.setObjectName("vbox")
         self.groupBox_2 = QtWidgets.QGroupBox(self.centralwidget)
         self.groupBox_2.setGeometry(QtCore.QRect(550, 0, 531, 711))
         font = QtGui.QFont()
@@ -117,6 +125,12 @@ class Ui_mainWindow(object):
         self.btn_flist_5 = QtWidgets.QPushButton(self.groupBox_2)
         self.btn_flist_5.setGeometry(QtCore.QRect(480, 30, 31, 31))
         self.btn_flist_5.setObjectName("btn_flist_5")
+        self.verticalLayoutWidget_3 = QtWidgets.QWidget(self.groupBox_2)
+        self.verticalLayoutWidget_3.setGeometry(QtCore.QRect(19, 89, 491, 361))
+        self.verticalLayoutWidget_3.setObjectName("verticalLayoutWidget_3")
+        self.vbox_HC = QtWidgets.QVBoxLayout(self.verticalLayoutWidget_3)
+        self.vbox_HC.setContentsMargins(0, 0, 0, 0)
+        self.vbox_HC.setObjectName("vbox_HC")
         self.groupBox_3 = QtWidgets.QGroupBox(self.centralwidget)
         self.groupBox_3.setGeometry(QtCore.QRect(1080, 0, 151, 711))
         font = QtGui.QFont()
@@ -148,7 +162,7 @@ class Ui_mainWindow(object):
         self.verticalLayout.addWidget(self.btn_Zaxis)
         mainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(mainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1237, 22))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1237, 27))
         self.menubar.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
         self.menubar.setObjectName("menubar")
         mainWindow.setMenuBar(self.menubar)
@@ -180,4 +194,3 @@ class Ui_mainWindow(object):
         self.btn_Xaxis.setText(_translate("mainWindow", "X axis"))
         self.btn_Yaxis.setText(_translate("mainWindow", "Y axis"))
         self.btn_Zaxis.setText(_translate("mainWindow", "Z axis"))
-
