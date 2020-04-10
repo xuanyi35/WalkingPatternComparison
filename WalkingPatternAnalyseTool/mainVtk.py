@@ -39,15 +39,20 @@ file_1 = None
 file_2 = None
 file_for = 'P'   # file for patient or HC
 
-class VideoWindow(Qt.QVBoxLayout):
+class VideoWindow:
     def __init__(self, viewWin, dirName, st, slider, parent=None):
-        # Qt.QGraphicsView.__init__(self, parent)
-        self = viewWin
+        # Qt.QVBoxLayout.__init__(self, parent)
+        self.win = viewWin
         self.frame = Qt.QFrame()
         self.vtkWidget = QVTKRenderWindowInteractor(self.frame)
-        self.addWidget(self.vtkWidget)
-
+        self.win.addWidget(self.vtkWidget)
         self.vtkRen = vtkWin(self.vtkWidget)
+
+    def getWin(self):
+        return self.win 
+
+    # def stopTimer(self):
+    #     self.vtkRen.rt.stop()
 
 
 class FileWindow(QWidget):
@@ -198,12 +203,12 @@ def startVis():
     print("start!")
 
 
-    if os.path.exists(f1):
-        shutil.rmtree(f1)
-    os.makedirs(f1)
-    if os.path.exists(f2):
-        shutil.rmtree(f2)
-    os.makedirs(f2)
+    # if os.path.exists(f1):
+    #     shutil.rmtree(f1)
+    # os.makedirs(f1)
+    # if os.path.exists(f2):
+    #     shutil.rmtree(f2)
+    # os.makedirs(f2)
 
     global pro1, pro2, start_Left,start_Right, ui, file_1, file_2
 
@@ -216,37 +221,24 @@ def startVis():
     ui.horizontalSlider_HC.setMaximum(490)
 
     # wait for 7 seconds and close
-    d = CustomDialog()
-    QtCore.QTimer.singleShot(7000, d.close )
-    d.exec_()
+    # d = CustomDialog()
+    # QtCore.QTimer.singleShot(7000, d.close )
+    # d.exec_()
 
 
     start_Left = 1
     start_Right = 1
 
+    rt = RepeatedTimer(0.001, updateWins )
+
+def updateWins():
+    global v1, v2
+    v1.vtkRen.moveFootTimerCallback.execute()
+    v2.vtkRen.moveFootTimerCallback.execute()
+
 
 def exit_handler():
-    global pro1, pro2
-    try:
-        pro1.kill()
-        pro2.kill()
-    except:
-        pass
-    # if pro1 != None:
-    #     time.sleep(0.1)
-    #     pro1.kill()
-    # if pro2 != None:
-    #     time.sleep(0.1)
-    #     pro2.kill()
-    time.sleep(0.1)
-    if os.path.exists(f1):
-        shutil.rmtree(f1, ignore_errors=True)
-    if os.path.exists(f2):
-        shutil.rmtree(f2, ignore_errors=True)
-
-
     print('My application is ending!')
-
 
 
 def leftSliderReleased():
@@ -305,6 +297,8 @@ def openFiles_HC():
 
 if __name__ == '__main__':
 
+    atexit.register(exit_handler)
+
     if os.path.exists(f1):
         shutil.rmtree(f1, ignore_errors=True)
     os.makedirs(f1)
@@ -324,8 +318,10 @@ if __name__ == '__main__':
     ui.btn_flist_5.clicked.connect( openFiles_HC )
 
     # visualization window
-    ui.graphicsView = VideoWindow( ui.vbox, f1, 0, ui.horizontalSlider)
-    ui.graphicsView_2 = VideoWindow( ui.vbox_HC, f2, 1, ui.horizontalSlider_HC)
+    v1 = VideoWindow( ui.vbox, f1, 0, ui.horizontalSlider)
+    v2 = VideoWindow( ui.vbox_HC, f2, 1, ui.horizontalSlider_HC)
+    ui.graphicsView = v1.getWin()
+    ui.graphicsView_2 = v2.getWin()
 
     #  start visualization
     ui.btn_start.clicked.connect(startVis)
@@ -347,7 +343,12 @@ if __name__ == '__main__':
 
     MainWindow.show()
 
-    atexit.register(exit_handler)
-    sys.exit(app.exec_())
+    
+    k = app.exec_()
+    if k == 0:
+        # v1.stopTimer()
+        # v2.stopTimer()
+        rt.stop()
+    sys.exit(k)
 
 

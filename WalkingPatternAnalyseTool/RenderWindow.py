@@ -5,7 +5,34 @@ from vtk import vtkCommand
 from PyQt5.QtCore import QTimer
 from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 
+from threading import Timer
+import threading
 
+
+class RepeatedTimer(object):
+    def __init__(self, interval, function, *args, **kwargs):
+        self._timer     = None
+        self.interval   = interval
+        self.function   = function
+        self.args       = args
+        self.kwargs     = kwargs
+        self.is_running = False
+        self.start()
+
+    def _run(self):
+        self.is_running = False
+        self.start()
+        self.function(*self.args, **self.kwargs)
+
+    def start(self):
+        if not self.is_running:
+            self._timer = Timer(self.interval, self._run)
+            self._timer.start()
+            self.is_running = True
+
+    def stop(self):
+        self._timer.cancel()
+        self.is_running = False
 
 
 class VtkMovingObj:
@@ -38,7 +65,7 @@ class VtkMovingObj:
 
 
 class MoveFootTimerCallback():
-    def __init__(self, renderer, movingObj, iterations, positions,movingObj2, position2 ):
+    def __init__(self, renderer, movingObj, iterations, positions,movingObj2, position2, iren ):
         self.iterations = iterations
         self.renderer = renderer
         self.cam = None
@@ -50,12 +77,14 @@ class MoveFootTimerCallback():
         self.movingObj2 = movingObj2
         self.positions2 = position2
         self.i = 0
+        self.iren = iren
 
         
 
-    def execute(self, iren, event):
-        print(self.posCounter)
-        print(self.i)
+    # def execute(self, iren, event):
+    def execute(self):
+        # print(self.posCounter)
+        # print(self.i)
         if self.i == self.iterations:
             self.movingObj.changePosition(self.positions[self.posCounter])
             self.movingObj2.changePosition(self.positions2[self.posCounter])
@@ -81,7 +110,7 @@ class MoveFootTimerCallback():
         self.renderer.AddActor(self.movingObj2.vtkActor)
 
         # iren.GetRenderWindow().Render()
-        iren.Render()
+        self.iren.Render()
 
     def changeCamPos(self):
         self.cam.SetPosition(self.campos )
@@ -164,10 +193,11 @@ class vtkWin:
         self.left_foot = VtkMovingObj( self.mat[0])
         self.right_foot = VtkMovingObj( self.mat2[0])
 
-        self.moveFootTimerCallback = MoveFootTimerCallback(self.ren, self.left_foot, 10, self.mat, self.right_foot, self.mat2 )
-        self.renderWindowInteractor.AddObserver('TimerEvent', self.moveFootTimerCallback.execute)
-        self.renderWindowInteractor.CreateRepeatingTimer(1)
-        # self.moveFootTimerCallback.timerId = self.timerId1
+        self.moveFootTimerCallback = MoveFootTimerCallback(self.ren, self.left_foot, 10, self.mat, self.right_foot, self.mat2, self.renderWindowInteractor )
+        # self.renderWindowInteractor.AddObserver('TimerEvent', self.moveFootTimerCallback.execute)
+        # self.renderWindowInteractor.CreateRepeatingTimer(1)
+        # self.rt = RepeatedTimer(0.001, self.moveFootTimerCallback.execute )
+
 
         self.renderWindowInteractor.Initialize()
         self.renderWindowInteractor.Start()
