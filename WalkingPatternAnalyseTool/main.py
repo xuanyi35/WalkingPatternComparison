@@ -153,7 +153,7 @@ class SignalWindow(Qt.QGraphicsView):
         # 2. Place the matplotlib figure
         # Todo: x_len is the length of the data
         # Todo: y_range should be adjust itself, x should be change with timer, interval should be adjust with video
-        self.myFig = MyFigureCanvas(x_len=200, y_range=[-300, 300], interval=20, signal_dir=self.signal_dir )
+        self.myFig = MyFigureCanvas(x_len=300, y_range=[-800, 800], interval=20, signal_dir=self.signal_dir )
         self.scene.addWidget(self.myFig )
         # self.scene.setSceneRect(QtCore.QRectF(viewWin.rect()))
         # self.grview.fitInView(self.scene.itemsBoundingRect())
@@ -185,6 +185,7 @@ class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
         self._x_len_ = x_len
         self._y_range_ = y_range
         self.signal_dir = signal_dir
+        self.data = sio.loadmat(self.signal_dir)
 
         # Store two lists _x_ and _y_
         x = [[i,i,i] for i in range(0, x_len) ]
@@ -197,8 +198,8 @@ class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
         self._ax_.set_ylim(ymin=self._y_range_[0], ymax=self._y_range_[1])
 
         self._lineX_, self._lineY_, self._lineZ_, = self._ax_.plot(x[:,0].tolist(), y[:,0].tolist(), 'r--',
-                                                                   x[:,1].tolist(), y[:,1].tolist(), 'bs',
-                                                                   x[:,2].tolist(), y[:,2].tolist(), 'g^')
+                                                                   x[:,1].tolist(), y[:,1].tolist(), 'b--',
+                                                                   x[:,2].tolist(), y[:,2].tolist(), 'g--')
 
         anim.FuncAnimation.__init__(self, self.figure, self._update_canvas_, fargs=(y.tolist(),), interval=interval, blit=True)
         return
@@ -220,13 +221,12 @@ class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
         return self._lineX_, self._lineY_, self._lineZ_
 
     def _get_next_datapoint(self):
-        data = sio.loadmat(self.signal_dir)
         global i
         i += 1
-        if i > len(data['linPos'])-1:
-            i = 0
+        if i > len(self.data['linAcc_3593'])-1:
+            print("signal end!")
 
-        return data['linPos'][i]
+        return self.data['linAcc_3593'][i]
 
 
 
@@ -376,9 +376,9 @@ if __name__ == '__main__':
 
     #signals window
     ui.graphicsView_3 = SignalWindow(viewWin=ui.graphicsView_3,
-                                     signal_dir="../WalkingPositionData/linePos_3593_20191220-095327.mat")
+                                     signal_dir="../WalkingPositionData/summary_20181012-102913_MLK_Walk.mat")
     ui.graphicsView_4 = SignalWindow(viewWin=ui.graphicsView_4,
-                                     signal_dir="../WalkingPositionData/linePos_3603_20191220.mat")
+                                     signal_dir="../WalkingPositionData/summary_20191220-095327_MLK_Walk.mat")
 
 
     MainWindow.show()
