@@ -1,12 +1,13 @@
 import sys
 from WalkingPatternAnalyseTool import PdVisualization
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QFileDialog, QDialog,QLabel, QVBoxLayout, QDialogButtonBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QFileDialog, QDialog,QLabel, QHBoxLayout, QVBoxLayout, QDialogButtonBox
 import sys, os, subprocess, time, shutil, signal
 import atexit
 import numpy as np
 from PyQt5 import Qt, QtCore, QtWidgets
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 import matplotlib as mpl
+import matplotlib.pyplot as plt
 import matplotlib.figure as mpl_fig
 import matplotlib.animation as anim
 # from matplotlib.backends.qt_compat import QtCore, QtWidgets
@@ -157,13 +158,27 @@ class SignalWindow(Qt.QGraphicsView):
         # 2. Place the matplotlib figure
         # Todo: x_len is the length of the data
         # Todo: y_range should be adjust itself, x should be change with timer, interval should be adjust with video
-        self.myFig = MyFigureCanvas(x_len=300, y_range=[-1000, 1000], interval=20, signal_dir=self.signal_dir )
-        self.scene.addWidget(self.myFig )
+        # self.myFig = MyFigureCanvas(x_len=300, y_range=[-1000, 1000], interval=20, signal_dir=self.signal_dir)
+        self.myFig = []
+        self.myFig.append( MyFigureCanvas(fcode=fcode_left, x_len=300, y_range=[-1000, 1000], interval=20,
+                                    signal_dir=self.signal_dir))
+        self.myFig.append(MyFigureCanvas(fcode=fcode_right, x_len=300, y_range=[-1000, 1000], interval=20,
+                                    signal_dir=self.signal_dir))
+        # self.scene.addItem(self.myFig[0])
+        # self.scene.addItem(self.myFig[1])
+
+        # self.scene.addWidget(self.myFig[0])
+        # self.scene.addWidget(self.myFig[1])
         # self.scene.setSceneRect(QtCore.QRectF(viewWin.rect()))
         # self.grview.fitInView(self.scene.itemsBoundingRect())
 
-        self.grview.setScene(self.scene)
 
+        self.layout = QHBoxLayout(self)
+        self.layout.addWidget(self.myFig[0])
+        self.layout.addWidget(self.myFig[1])
+        self.grview.setLayout(self.layout)
+
+        # self.grview.setScene(self.scene)
         # 3. Show
         # print(self.grview.mapToScene(self.grview.rect()).boundingRect())
         # self.grview.fitInView(self.grview.mapToScene(self.grview.rect()).boundingRect())
@@ -177,7 +192,7 @@ class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
 
     '''
 
-    def __init__(self, x_len, y_range, interval, signal_dir):
+    def __init__(self, fcode, x_len, y_range, interval, signal_dir):
         '''
         :param x_len:       The nr of data points shown in one plot.
         :param y_range:     Range on y-axis.
@@ -193,14 +208,19 @@ class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
         self.data = sio.loadmat(self.signal_dir)  # TODO: where to load: here or _get_next_datapoint()
 
         # Store a figure and ax
-        axs = self.figure.subplots(1, 2) # plot 1 figure
+        # self.figure = fig
+        ax = self.figure.subplots() # plot 1 figure
         # self.anim = {fcode_left: anim.FuncAnimation, fcode_right: anim.FuncAnimation}
-        self._animat_axs_(axs[0], fcode_left)
-        self._animat_axs_(axs[1], fcode_right)
-        print("axs[0]:", axs[0])
-        print("axs[1]:", axs[1])
+        self._animat_axs_(ax, fcode)
+
+        # self._animat_axs_(axs[0], fcode_left)
+        # self._animat_axs_(axs[1], fcode_right)
+        # print("axs[0]:", axs[0])
+        # print("axs[1]:", axs[1])
 
         return
+
+
 
     def _animat_axs_(self, ax, fcode):
         ax.set_ylim(ymin=self._y_range_[0], ymax=self._y_range_[1])
