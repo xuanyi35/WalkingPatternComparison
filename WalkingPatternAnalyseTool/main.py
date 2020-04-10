@@ -32,6 +32,10 @@ file_1 = None
 file_2 = None
 file_for = 'P'   # file for patient or HC
 
+fcode_left = "3593"   # the default file code for left foot signal in Sensor hdf5 file
+fcode_right = "3603"   # the default file code for left foot signal in Sensor hdf5 file
+
+
 class VideoWindow(Qt.QGraphicsView):
     def __init__(self, viewWin, dirName, st, slider, parent=None):
         Qt.QGraphicsView.__init__(self, parent)
@@ -153,7 +157,7 @@ class SignalWindow(Qt.QGraphicsView):
         # 2. Place the matplotlib figure
         # Todo: x_len is the length of the data
         # Todo: y_range should be adjust itself, x should be change with timer, interval should be adjust with video
-        self.myFig = MyFigureCanvas(x_len=300, y_range=[-800, 800], interval=20, signal_dir=self.signal_dir )
+        self.myFig = MyFigureCanvas(x_len=300, y_range=[-1000, 1000], interval=20, signal_dir=self.signal_dir )
         self.scene.addWidget(self.myFig )
         # self.scene.setSceneRect(QtCore.QRectF(viewWin.rect()))
         # self.grview.fitInView(self.scene.itemsBoundingRect())
@@ -163,7 +167,7 @@ class SignalWindow(Qt.QGraphicsView):
         # 3. Show
         # print(self.grview.mapToScene(self.grview.rect()).boundingRect())
         # self.grview.fitInView(self.grview.mapToScene(self.grview.rect()).boundingRect())
-        self.grview.fitInView(0, 0, 200, 100)
+        self.grview.fitInView(0, 0, 115, 200)
         self.grview.show()
         return
 
@@ -184,33 +188,47 @@ class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
         # Range settings
         self._x_len_ = x_len
         self._y_range_ = y_range
+        self.interval = interval
         self.signal_dir = signal_dir
-        self.data = sio.loadmat(self.signal_dir)
-
-        # Store two lists _x_ and _y_
-        x = [[i,i,i] for i in range(0, x_len) ]
-        x = np.array(x)
-        y = [[0 for i in range(3)] for j in range(0, x_len)]
-        y = np.array(y)
+        self.data = sio.loadmat(self.signal_dir)  # TODO: where to load: here or _get_next_datapoint()
 
         # Store a figure and ax
-        self._ax_ = self.figure.subplots() # plot 1 figure
-        self._ax_.set_ylim(ymin=self._y_range_[0], ymax=self._y_range_[1])
+        axs = self.figure.subplots(1, 2) # plot 1 figure
+        # self.anim = {fcode_left: anim.FuncAnimation, fcode_right: anim.FuncAnimation}
+        self._animat_axs_(axs[0], fcode_left)
+        self._animat_axs_(axs[1], fcode_right)
+        print("axs[0]:", axs[0])
+        print("axs[1]:", axs[1])
 
-        self._lineX_, self._lineY_, self._lineZ_, = self._ax_.plot(x[:,0].tolist(), y[:,0].tolist(), 'r--',
-                                                                   x[:,1].tolist(), y[:,1].tolist(), 'b--',
-                                                                   x[:,2].tolist(), y[:,2].tolist(), 'g--')
-
-        anim.FuncAnimation.__init__(self, self.figure, self._update_canvas_, fargs=(y.tolist(),), interval=interval, blit=True)
         return
 
-    def _update_canvas_(self, i, y) -> None:
+    def _animat_axs_(self, ax, fcode):
+        ax.set_ylim(ymin=self._y_range_[0], ymax=self._y_range_[1])
+        # Store two lists _x_ and _y_
+        x = [[i,i,i] for i in range(0, self._x_len_) ]
+        x = np.array(x)
+        y = [[0 for i in range(3)] for j in range(0, self._x_len_)]
+        y = np.array(y)
+
+
+        self._lineX_, self._lineY_, self._lineZ_, = ax.plot(x[:,0].tolist(), y[:,0].tolist(), 'r',
+                                                                   x[:,1].tolist(), y[:,1].tolist(), 'b',
+                                                                   x[:,2].tolist(), y[:,2].tolist(), 'g')
+
+        print("fcode111:", fcode)
+        # self.anim ={fcode_left:anim.FuncAnimation,fcode_right: anim.FuncAnimation }
+        # self.anim[fcode].__init__(self, self.figure, self._update_canvas_, fargs=(y.tolist(),fcode,), interval=self.interval, blit=True)
+        anim.FuncAnimation.__init__(self, self.figure, self._update_canvas_, fargs=(y.tolist(), fcode,),
+                                  interval=self.interval, blit=True)
+        print("fcode222:", fcode)
+        return
+
+    def _update_canvas_(self,i, y, fcode) -> None:
         '''
         This function gets called regularly by the timer.
-
         '''
-        # y.append(round(self._get_next_datapoint(), 5))  # Add new datapoint
-        y.append(self._get_next_datapoint()) # Add new datapoint
+        print("fcode333:", fcode)
+        y.append(self._get_next_datapoint()[fcode]) # Add new datapoint
         y = y[-self._x_len_:]  # Truncate list _y_ : avoid broadcast error
 
         y = np.array(y)
@@ -223,10 +241,12 @@ class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
     def _get_next_datapoint(self):
         global i
         i += 1
-        if i > len(self.data['linAcc_3593'])-1:
+        if i > len(self.data['linAcc_'+fcode_left])-1 or i > len(self.data['linAcc_'+fcode_right])-1:
             print("signal end!")
-
-        return self.data['linAcc_3593'][i]
+        # print("self.data['linAcc_3593'][i]:", self.data['linAcc_3593'][i])
+        # print("self.data['linAcc_3603'][i]:", self.data['linAcc_3603'][i])
+        # return self.data['linAcc_3593'][i]
+        return {fcode_left:self.data['linAcc_'+fcode_left][i], fcode_right:self.data['linAcc_'+fcode_right][i]}
 
 
 
