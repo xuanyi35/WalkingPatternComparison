@@ -65,7 +65,7 @@ class VtkMovingObj:
 
 
 class MoveFootTimerCallback():
-    def __init__(self, renderer, movingObj, iterations, positions,movingObj2, position2, iren ):
+    def __init__(self, renderer, movingObj, iterations, positions,movingObj2, position2, iren, slider ):
         self.iterations = iterations
         self.renderer = renderer
         self.cam = None
@@ -78,6 +78,7 @@ class MoveFootTimerCallback():
         self.positions2 = position2
         self.i = 0
         self.iren = iren
+        self.slider = slider
 
         
 
@@ -92,7 +93,10 @@ class MoveFootTimerCallback():
            
         if self.posCounter == len(self.positions) -1 :
             self.posCounter -= 1
-            
+
+        if self.posCounter % 128 == 0:
+            self.slider.setValue(self.posCounter)
+
         if self.i == self.iterations:
             self.movingObj.changePosition(self.positions[self.posCounter])
             self.movingObj2.changePosition(self.positions2[self.posCounter])
@@ -148,7 +152,7 @@ class MoveFootTimerCallback():
 #     moveFootTimerCallback.changeCamPos()
 
 class vtkWin:
-    def __init__(self, renderInter):
+    def __init__(self, renderInter, slider):
         # Renderer
         self.ren = vtk.vtkRenderer()
         self.ren.SetBackground(0.1, 0.2, 0.4)
@@ -161,8 +165,9 @@ class vtkWin:
         self.mat2 = [[0,0,0]]
         self.left_foot = VtkMovingObj( self.mat[0])
         self.right_foot = VtkMovingObj( self.mat2[0])
+        self.slider = slider
         
-        self.moveFootTimerCallback = MoveFootTimerCallback(self.ren, self.left_foot, 10, self.mat, self.right_foot, self.mat2, self.renderWindowInteractor )
+        self.moveFootTimerCallback = MoveFootTimerCallback(self.ren, self.left_foot, 10, self.mat, self.right_foot, self.mat2, self.renderWindowInteractor, self.slider )
 
         
 
@@ -174,7 +179,7 @@ class vtkWin:
         
         self.mat = mat_left[::1]
         self.mat2 = mat_right[::1]
-        self.moveFootTimerCallback = MoveFootTimerCallback(self.ren, self.left_foot, 1, self.mat, self.right_foot, self.mat2, self.renderWindowInteractor )
+        self.moveFootTimerCallback = MoveFootTimerCallback(self.ren, self.left_foot, 1, self.mat, self.right_foot, self.mat2, self.renderWindowInteractor, self.slider )
     
 
     

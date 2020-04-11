@@ -52,7 +52,7 @@ class VideoWindow:
         self.frame = Qt.QFrame()
         self.vtkWidget = QVTKRenderWindowInteractor(self.frame)
         self.win.addWidget(self.vtkWidget)
-        self.vtkRen = vtkWin(self.vtkWidget)
+        self.vtkRen = vtkWin(self.vtkWidget, slider )
 
     def getWin(self):
         return self.win 
