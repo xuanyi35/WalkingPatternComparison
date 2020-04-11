@@ -127,6 +127,9 @@ class MoveFootTimerCallback():
         self.cam = self.renderer.GetActiveCamera()
         self.campos = self.cam.GetPosition() 
         self.camFoc = self.cam.GetFocalPoint()
+
+    def getPosCounter(self):
+        return self.posCounter
         
 
         

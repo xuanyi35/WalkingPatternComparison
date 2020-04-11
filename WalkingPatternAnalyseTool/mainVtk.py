@@ -33,6 +33,8 @@ pro2 = None
 # horizontalSlider_2
 t1 = 0
 t2 = 0
+s1 = None
+s2 = None
 
 i = 0
 
@@ -57,8 +59,6 @@ class VideoWindow:
     def getWin(self):
         return self.win 
 
-    # def stopTimer(self):
-    #     self.vtkRen.rt.stop()
 
 
 class FileWindow(QWidget):
@@ -116,33 +116,30 @@ class CustomDialog(QDialog):
 
 
 
-class SignalWindow(Qt.QGraphicsView):
-    def __init__(self, viewWin, matdata, parent=None):
-        Qt.QGraphicsView.__init__(self, parent)
+class SignalWindow:
+    def __init__(self, viewWin, matdata, coresVideo, parent=None):
+        # Qt.QGraphicsView.__init__(self, parent)
         # 1. Window settings
         self.grview = viewWin
-        # self.signal_dir = signal_dir
-        self.scene = Qt.QGraphicsScene()
-        # print(viewWin.rect())
+        self.corresponding_video = coresVideo
 
         # 2. Place the matplotlib figure
         # Todo: x_len is the length of the data
         # Todo: y_range should be adjust itself, x should be change with timer, interval should be adjust with video
         self.myFig = []
-        self.myFig.append( MyFigureCanvas(fcode=fcode_left, x_len=300, y_range=[-1200, 1200], interval=20,
-                                    signal_mat=matdata))
-        self.myFig.append(MyFigureCanvas(fcode=fcode_right, x_len=300, y_range=[-1200, 1200], interval=20,
-                                    signal_mat=matdata))
-        # self.scene.setSceneRect(QtCore.QRectF(viewWin.rect()))
-        # self.grview.fitInView(self.scene.itemsBoundingRect())
+        self.canvas_left =  MyFigureCanvas(fcode=fcode_left, x_len=300, y_range=[-1200, 1200], interval=20,
+                                    signal_mat=matdata, video = self.corresponding_video )
+        self.myFig.append(self.canvas_left)
+        self.canvas_right = MyFigureCanvas(fcode=fcode_right, x_len=300, y_range=[-1200, 1200], interval=20,
+                                    signal_mat=matdata, video = self.corresponding_video )
+        self.myFig.append(self.canvas_right)
 
 
-        self.layout = QHBoxLayout(self)
+        self.layout = QHBoxLayout(self.grview)
         self.layout.addWidget(self.myFig[0])
         self.layout.addWidget(self.myFig[1])
         self.grview.setLayout(self.layout)
 
-        # self.grview.setScene(self.scene)
         # 3. Show
         # print(self.grview.mapToScene(self.grview.rect()).boundingRect())
         # self.grview.fitInView(self.grview.mapToScene(self.grview.rect()).boundingRect())
@@ -156,7 +153,7 @@ class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
 
     '''
 
-    def __init__(self, fcode, x_len, y_range, interval, signal_mat):
+    def __init__(self, fcode, x_len, y_range, interval, signal_mat, video):
         '''
         :param x_len:       The nr of data points shown in one plot.
         :param y_range:     Range on y-axis.
@@ -168,15 +165,15 @@ class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
         self._x_len_ = x_len
         self._y_range_ = y_range
         self.interval = interval
-        # self.signal_dir = signal_dir
         self.data = signal_mat
-        #sio.loadmat(self.signal_dir)  # TODO: where to load: here or _get_next_datapoint()
+        self.video = video
+        self.t = 0
+        self.video_t = self.video.moveFootTimerCallback.getPosCounter()
 
         # Store a figure and ax
         ax = self.figure.subplots() # plot 1 figure
 
-        # self.figure.xticks(fontsize=7)
-
+        fcode = fcode
 
         if fcode == fcode_left:
             ax.set_title('Acceleration-Left', fontsize=7)
@@ -185,9 +182,9 @@ class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
         ax.set_xlabel('time [1/128s]', fontsize=7)
         ax.set_ylabel('Acceleration', fontsize=7, labelpad=5)
         ax.tick_params(labelsize=5)
-        # ax.text(frontsize = 7)
-        self._animat_axs_(ax, fcode)
 
+        self._animat_axs_(ax, fcode)
+        
         return
 
 
@@ -213,9 +210,17 @@ class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
         '''
         This function gets called regularly by the timer.
         '''
-        y.append(self._get_next_datapoint()[fcode]) # Add new datapoint
-        y = y[-self._x_len_:]  # Truncate list _y_ : avoid broadcast error
+        self.video_t = self.video.moveFootTimerCallback.getPosCounter()
+        if self.t  !=  self.video_t:
+            if abs(self.video_t - self.t) >= 100:
+                self.t = self.video_t
+                for j in range(0, self._x_len_ -1 ):
+                    y.append([0,0,0])
 
+            else:
+                self.t = self.video_t
+            y.append(self._get_next_datapoint( self.t )[fcode]) # Add new datapoint
+        y = y[-self._x_len_:]  # Truncate list _y_ : avoid broadcast error
         y = np.array(y)
         self._lineX_.set_ydata(y[:,0].tolist())
         self._lineY_.set_ydata(y[:,1].tolist())
@@ -223,31 +228,28 @@ class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
 
         return self._lineX_, self._lineY_, self._lineZ_
 
-    def _get_next_datapoint(self):
-        global i
-        i += 1
+    def _get_next_datapoint(self, i ):
+        # global i
+        # i += 1
         if i > len(self.data['linAcc_'+fcode_left])-1 or i > len(self.data['linAcc_'+fcode_right])-1:
             print("signal end!")
 
         return {fcode_left:self.data['linAcc_'+fcode_left][i], fcode_right:self.data['linAcc_'+fcode_right][i]}
-
-
-
-
+    
 
 def startVis():
     print("start!")
 
-    global pro1, pro2, start_Left,start_Right, ui, file_1, file_2, rt,  v1, v2
+    global pro1, pro2, start_Left,start_Right, ui, file_1, file_2, rt,  v1, v2, s1, s2
 
     print(file_1)
     print(file_2)
 
-    file_1 = "C:/Users/Cecilia/Desktop/804GUI/WalkingPatternComparison/WalkingPositionData/summary_20181012-102913_MLK_Walk.mat"
-    file_2 =  "C:/Users/Cecilia/Desktop/804GUI/WalkingPatternComparison/WalkingPositionData/summary_20191220-095327_MLK_Walk.mat"
+    # file_1 = "C:/Users/Cecilia/Desktop/804GUI/WalkingPatternComparison/WalkingPositionData/summary_20181012-102913_MLK_Walk.mat"
+    # file_2 =  "C:/Users/Cecilia/Desktop/804GUI/WalkingPatternComparison/WalkingPositionData/summary_20191220-095327_MLK_Walk.mat"
 
     if file_1 == None or file_2 == None:
-        d = CustomDialog("Please select data file before you start.....")
+        d = CustomDialog("Please select data files before you start")
         # QtCore.QTimer.singleShot(2000, d.close )
         d.exec_()
         return 
@@ -268,7 +270,6 @@ def startVis():
 
     start_Left = 1
     start_Right = 1
-    rt = RepeatedTimer(0.0001, updateWins )
 
     v1.vtkRen.setMat(mat1_left, mat1_right)
     v2.vtkRen.setMat(mat2_left, mat2_right)
@@ -277,10 +278,13 @@ def startVis():
     ui.horizontalSlider_HC.setMaximum( len(mat2_left)-1 )
 
     #signals window
-    ui.graphicsView_3 = SignalWindow(viewWin=ui.graphicsView_3,
-                                     matdata=dataMat )
-    ui.graphicsView_4 = SignalWindow(viewWin=ui.graphicsView_4,
-                                     matdata=dataMat)
+    s1 = SignalWindow(viewWin=ui.graphicsView_3,
+                                     matdata=dataMat, coresVideo = v1.vtkRen )
+    s2 = SignalWindow(viewWin=ui.graphicsView_4,
+                                     matdata=dataMat, coresVideo = v2.vtkRen)
+    ui.graphicsView_3 = s1.grview
+    ui.graphicsView_4 = s2.grview
+    rt = RepeatedTimer(0.0001, updateWins )
 
 
     
@@ -292,8 +296,11 @@ def updateWins():
     global v1, v2, start_Left, start_Right
     if start_Left == 1:
         v1.vtkRen.moveFootTimerCallback.execute()
+
+
     if start_Right == 1:
         v2.vtkRen.moveFootTimerCallback.execute()
+
 
 
 def exit_handler():
@@ -301,14 +308,12 @@ def exit_handler():
 
 
 def leftSliderReleased():
-    global t1, ui, v1
-    t1 = ui.horizontalSlider.value()
+    global  ui, v1
     v1.vtkRen.moveFootTimerCallback.posCounter = ui.horizontalSlider.value()
 
 
 def rightSliderReleased():
-    global t2, ui, v2
-    t2 = ui.horizontalSlider_HC.value()
+    global  ui, v2
     v2.vtkRen.moveFootTimerCallback.posCounter = ui.horizontalSlider_HC.value()
 
 
@@ -342,31 +347,9 @@ def openFiles_HC():
     ex = FileWindow()
 
 
-
-# Data source
-# ------------
-# n = np.linspace(0, 499, 500)
-# d = 50 + 25 * (np.sin(n / 8.3)) + 10 * (np.sin(n / 7.5)) - 5 * (np.sin(n / 1.5))
-# i = 0
-# def get_next_datapoint_test():
-#     global i
-#     i += 1
-#     if i > 499:
-#         i = 0
-#     return d[i]
-
-
-
 if __name__ == '__main__':
 
     atexit.register(exit_handler)
-
-    if os.path.exists(f1):
-        shutil.rmtree(f1, ignore_errors=True)
-    os.makedirs(f1)
-    if os.path.exists(f2):
-        shutil.rmtree(f2, ignore_errors=True)
-    os.makedirs(f2)
 
     app = QApplication(sys.argv)
     MainWindow = QMainWindow()
@@ -403,8 +386,6 @@ if __name__ == '__main__':
     
     k = app.exec_()
     if k == 0:
-        # v1.stopTimer()
-        # v2.stopTimer()
         try:
             rt.stop()
         except:
