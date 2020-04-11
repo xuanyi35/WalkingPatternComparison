@@ -57,10 +57,10 @@ class VtkMovingObj:
 
         self.vtkActor.SetPosition( initial_pos )
         if(is_right):
-            self.vtkActor.SetScale(0.05)
+            self.vtkActor.SetScale(0.005)
             self.vtkActor.RotateZ(90)
         else:
-            self.vtkActor.SetScale(-0.05)
+            self.vtkActor.SetScale(-0.005)
             self.vtkActor.RotateZ(90)
             self.vtkActor.RotateX(180)
 
