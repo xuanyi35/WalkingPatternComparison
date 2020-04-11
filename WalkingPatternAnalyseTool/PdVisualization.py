@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_mainWindow(object):
     def setupUi(self, mainWindow):
         mainWindow.setObjectName("mainWindow")
-        mainWindow.resize(1237, 752)
+        mainWindow.resize(1237, 755)
         mainWindow.setAutoFillBackground(True)
         self.centralwidget = QtWidgets.QWidget(mainWindow)
         self.centralwidget.setAutoFillBackground(True)
@@ -130,10 +130,10 @@ class Ui_mainWindow(object):
         self.vbox_HC.setContentsMargins(0, 0, 0, 0)
         self.vbox_HC.setObjectName("vbox_HC")
         self.btn_start = QtWidgets.QPushButton(self.centralwidget)
-        self.btn_start.setGeometry(QtCore.QRect(1080, 20, 151, 61))
+        self.btn_start.setGeometry(QtCore.QRect(1080, 20, 151, 51))
         self.btn_start.setObjectName("btn_start")
         self.textBrowser = QtWidgets.QTextBrowser(self.centralwidget)
-        self.textBrowser.setGeometry(QtCore.QRect(1080, 90, 151, 621))
+        self.textBrowser.setGeometry(QtCore.QRect(1090, 90, 141, 621))
         self.textBrowser.setObjectName("textBrowser")
         mainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(mainWindow)
@@ -168,17 +168,17 @@ class Ui_mainWindow(object):
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'.SF NS Text\'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\'; font-weight:600;\">Instruction</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\';\">This tool is used for visualizing human walking pattern. </span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\';\">The position data for animation is computed according to Accelerometer and Gyroscope data from sensors.</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px; font-family:\'Helvetica Neue\';\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\';\">In signal display: </span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\';\">3-color line is displaying the accelerometer data in coordinate axis.</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\'; font-weight:600; color:#bd180f;\">Red</span><span style=\" font-family:\'Helvetica Neue\';\"> is for </span><span style=\" font-family:\'Helvetica Neue\'; font-weight:600; color:#bd180f;\">X</span><span style=\" font-family:\'Helvetica Neue\';\"> axis.</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\'; font-weight:600; color:#2315c1;\">Blue </span><span style=\" font-family:\'Helvetica Neue\';\">is for </span><span style=\" font-family:\'Helvetica Neue\'; font-weight:600; color:#2315c1;\">Y</span><span style=\" font-family:\'Helvetica Neue\';\"> axis. </span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\'; font-weight:600; color:#108e1e;\">Green</span><span style=\" font-family:\'Helvetica Neue\';\"> is for </span><span style=\" font-family:\'Helvetica Neue\'; font-weight:600; color:#108e1e;\">Z</span><span style=\" font-family:\'Helvetica Neue\';\"> axis.</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px; font-family:\'Helvetica Neue\';\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\'; font-weight:600;\">Usage</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\';\">You could adjust  the angle of view with your mouse clicked in the animation viewport.</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\';\">You could rewind, pause or fast forward the process using Timer panel.</span> </p></body></html>"))
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\'; font-size:10pt; font-weight:600;\">Instruction</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\'; font-size:10pt;\">This tool is used for visualizing human walking pattern. </span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\'; font-size:10pt;\">The position data for animation is computed according to Accelerometer and Gyroscope data from sensors.</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px; font-family:\'Helvetica Neue\'; font-size:10pt;\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\'; font-size:10pt;\">In signal display: </span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\'; font-size:10pt;\">3-color line is displaying the accelerometer data in coordinate axis.</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\'; font-size:10pt; font-weight:600; color:#bd180f;\">Red</span><span style=\" font-family:\'Helvetica Neue\'; font-size:10pt;\"> is for </span><span style=\" font-family:\'Helvetica Neue\'; font-size:10pt; font-weight:600; color:#bd180f;\">X</span><span style=\" font-family:\'Helvetica Neue\'; font-size:10pt;\"> axis.</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\'; font-size:10pt; font-weight:600; color:#2315c1;\">Blue </span><span style=\" font-family:\'Helvetica Neue\'; font-size:10pt;\">is for </span><span style=\" font-family:\'Helvetica Neue\'; font-size:10pt; font-weight:600; color:#2315c1;\">Y</span><span style=\" font-family:\'Helvetica Neue\'; font-size:10pt;\"> axis. </span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\'; font-size:10pt; font-weight:600; color:#108e1e;\">Green</span><span style=\" font-family:\'Helvetica Neue\'; font-size:10pt;\"> is for </span><span style=\" font-family:\'Helvetica Neue\'; font-size:10pt; font-weight:600; color:#108e1e;\">Z</span><span style=\" font-family:\'Helvetica Neue\'; font-size:10pt;\"> axis.</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px; font-family:\'Helvetica Neue\'; font-size:10pt;\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\'; font-size:10pt; font-weight:600;\">Usage</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\'; font-size:10pt;\">You could adjust  the angle of view with your mouse clicked in the animation viewport.</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\'; font-size:10pt;\">You could rewind, pause or fast forward the process using Timer panel.</span><span style=\" font-size:10pt;\"> </span></p></body></html>"))
 
