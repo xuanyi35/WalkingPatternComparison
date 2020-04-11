@@ -37,7 +37,7 @@ class RepeatedTimer(object):
 
 class VtkMovingObj:
 
-    def __init__(self, initial_pos):
+    def __init__(self, initial_pos, is_right):
         # source = vtk.vtkSphereSource()
         # source.SetRadius(3.0)
         # cube = vtk.vtkCubeSource()
@@ -54,10 +54,16 @@ class VtkMovingObj:
         
         self.vtkActor = vtk.vtkActor()
         self.vtkActor.SetMapper(self.mapper)
-        self.vtkActor.SetScale(0.05)
+
         self.vtkActor.SetPosition( initial_pos )
-        self.vtkActor.RotateZ(90)
-      
+        if(is_right):
+            self.vtkActor.SetScale(0.05)
+            self.vtkActor.RotateZ(90)
+        else:
+            self.vtkActor.SetScale(-0.05)
+            self.vtkActor.RotateZ(90)
+            self.vtkActor.RotateX(180)
+
 
     def changePosition(self, position):
         self.vtkActor.SetPosition( position )
@@ -170,8 +176,8 @@ class vtkWin:
         # initialize two foot 
         self.mat = [[0,0,0]]
         self.mat2 = [[0,0,0]]
-        self.left_foot = VtkMovingObj( self.mat[0])
-        self.right_foot = VtkMovingObj( self.mat2[0])
+        self.left_foot = VtkMovingObj( self.mat[0], 0)
+        self.right_foot = VtkMovingObj( self.mat2[0], 1)
         self.slider = slider
         
         self.moveFootTimerCallback = MoveFootTimerCallback(self.ren, self.left_foot, 10, self.mat, self.right_foot, self.mat2, self.renderWindowInteractor, self.slider )
