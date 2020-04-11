@@ -2,7 +2,8 @@ import sys
 # from WalkingPatternAnalyseTool import PdVisualization
 import PdVisualization
 from RenderWindow import *
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QFileDialog, QDialog,QLabel, QVBoxLayout, QDialogButtonBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QFileDialog, QDialog,QLabel,QHBoxLayout,\
+     QVBoxLayout, QDialogButtonBox
 import sys, os, subprocess, time, shutil, signal
 import atexit
 import numpy as np
@@ -18,7 +19,6 @@ import vtk
 import vtk.qt
 # vtk.qt.QVTKRWIBase = "QGLWidget"
 from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
-import scipy.io
 
 # control start or stop for left and right
 start_Left = 0
@@ -40,6 +40,10 @@ file_1 = None
 file_2 = None
 file_for = 'P'   # file for patient or HC
 rt = None
+
+
+fcode_left = "3593"   # the default file code for left foot signal in Sensor hdf5 file
+fcode_right = "3603"   # the default file code for left foot signal in Sensor hdf5 file
 
 class VideoWindow:
     def __init__(self, viewWin, dirName, st, slider, parent=None):
@@ -113,28 +117,36 @@ class CustomDialog(QDialog):
 
 
 class SignalWindow(Qt.QGraphicsView):
-    def __init__(self, viewWin, signal_dir, parent=None):
+    def __init__(self, viewWin, matdata, parent=None):
         Qt.QGraphicsView.__init__(self, parent)
         # 1. Window settings
         self.grview = viewWin
-        self.signal_dir = signal_dir
+        # self.signal_dir = signal_dir
         self.scene = Qt.QGraphicsScene()
         # print(viewWin.rect())
 
         # 2. Place the matplotlib figure
         # Todo: x_len is the length of the data
         # Todo: y_range should be adjust itself, x should be change with timer, interval should be adjust with video
-        self.myFig = MyFigureCanvas(x_len=300, y_range=[-800, 800], interval=20, signal_dir=self.signal_dir )
-        self.scene.addWidget(self.myFig )
+        self.myFig = []
+        self.myFig.append( MyFigureCanvas(fcode=fcode_left, x_len=300, y_range=[-1200, 1200], interval=20,
+                                    signal_mat=matdata))
+        self.myFig.append(MyFigureCanvas(fcode=fcode_right, x_len=300, y_range=[-1200, 1200], interval=20,
+                                    signal_mat=matdata))
         # self.scene.setSceneRect(QtCore.QRectF(viewWin.rect()))
         # self.grview.fitInView(self.scene.itemsBoundingRect())
 
-        self.grview.setScene(self.scene)
 
+        self.layout = QHBoxLayout(self)
+        self.layout.addWidget(self.myFig[0])
+        self.layout.addWidget(self.myFig[1])
+        self.grview.setLayout(self.layout)
+
+        # self.grview.setScene(self.scene)
         # 3. Show
         # print(self.grview.mapToScene(self.grview.rect()).boundingRect())
         # self.grview.fitInView(self.grview.mapToScene(self.grview.rect()).boundingRect())
-        self.grview.fitInView(0, 0, 200, 100)
+        self.grview.fitInView(0, 0, 115, 200)
         self.grview.show()
         return
 
@@ -144,7 +156,7 @@ class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
 
     '''
 
-    def __init__(self, x_len, y_range, interval, signal_dir):
+    def __init__(self, fcode, x_len, y_range, interval, signal_mat):
         '''
         :param x_len:       The nr of data points shown in one plot.
         :param y_range:     Range on y-axis.
@@ -155,33 +167,53 @@ class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
         # Range settings
         self._x_len_ = x_len
         self._y_range_ = y_range
-        self.signal_dir = signal_dir
-        self.data = sio.loadmat(self.signal_dir)
-
-        # Store two lists _x_ and _y_
-        x = [[i,i,i] for i in range(0, x_len) ]
-        x = np.array(x)
-        y = [[0 for i in range(3)] for j in range(0, x_len)]
-        y = np.array(y)
+        self.interval = interval
+        # self.signal_dir = signal_dir
+        self.data = signal_mat
+        #sio.loadmat(self.signal_dir)  # TODO: where to load: here or _get_next_datapoint()
 
         # Store a figure and ax
-        self._ax_ = self.figure.subplots() # plot 1 figure
-        self._ax_.set_ylim(ymin=self._y_range_[0], ymax=self._y_range_[1])
+        ax = self.figure.subplots() # plot 1 figure
 
-        self._lineX_, self._lineY_, self._lineZ_, = self._ax_.plot(x[:,0].tolist(), y[:,0].tolist(), 'r--',
-                                                                   x[:,1].tolist(), y[:,1].tolist(), 'b--',
-                                                                   x[:,2].tolist(), y[:,2].tolist(), 'g--')
+        # self.figure.xticks(fontsize=7)
 
-        anim.FuncAnimation.__init__(self, self.figure, self._update_canvas_, fargs=(y.tolist(),), interval=interval, blit=True)
+
+        if fcode == fcode_left:
+            ax.set_title('Acceleration-Left', fontsize=7)
+        else:
+            ax.set_title('Acceleration-Right', fontsize=7)
+        ax.set_xlabel('time [1/128s]', fontsize=7)
+        ax.set_ylabel('Acceleration', fontsize=7, labelpad=5)
+        ax.tick_params(labelsize=5)
+        # ax.text(frontsize = 7)
+        self._animat_axs_(ax, fcode)
+
         return
 
-    def _update_canvas_(self, i, y) -> None:
+
+
+    def _animat_axs_(self, ax, fcode):
+        ax.set_ylim(ymin=self._y_range_[0], ymax=self._y_range_[1])
+        # Store two lists _x_ and _y_
+        x = [[i,i,i] for i in range(0, self._x_len_) ]
+        x = np.array(x)
+        y = [[0 for i in range(3)] for j in range(0, self._x_len_)]
+        y = np.array(y)
+
+
+        self._lineX_, self._lineY_, self._lineZ_, = ax.plot(x[:,0].tolist(), y[:,0].tolist(), 'r',
+                                                                   x[:,1].tolist(), y[:,1].tolist(), 'b',
+                                                                   x[:,2].tolist(), y[:,2].tolist(), 'g')
+
+        anim.FuncAnimation.__init__(self, self.figure, self._update_canvas_, fargs=(y.tolist(), fcode,),
+                                  interval=self.interval, blit=True)
+        return
+
+    def _update_canvas_(self,i, y, fcode) -> None:
         '''
         This function gets called regularly by the timer.
-
         '''
-        # y.append(round(self._get_next_datapoint(), 5))  # Add new datapoint
-        y.append(self._get_next_datapoint()) # Add new datapoint
+        y.append(self._get_next_datapoint()[fcode]) # Add new datapoint
         y = y[-self._x_len_:]  # Truncate list _y_ : avoid broadcast error
 
         y = np.array(y)
@@ -194,10 +226,12 @@ class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
     def _get_next_datapoint(self):
         global i
         i += 1
-        if i > len(self.data['linAcc_3593'])-1:
+        if i > len(self.data['linAcc_'+fcode_left])-1 or i > len(self.data['linAcc_'+fcode_right])-1:
             print("signal end!")
 
-        return self.data['linAcc_3593'][i]
+        return {fcode_left:self.data['linAcc_'+fcode_left][i], fcode_right:self.data['linAcc_'+fcode_right][i]}
+
+
 
 
 
@@ -219,8 +253,8 @@ def startVis():
         return 
 
     try:
-        dataMat = scipy.io.loadmat( file_1 ) 
-        dataMat2 = scipy.io.loadmat( file_2 ) 
+        dataMat = sio.loadmat( file_1 ) 
+        dataMat2 = sio.loadmat( file_2 ) 
         mat1_left = dataMat['linPos_3603']
         mat1_right = dataMat['linPos_3593']
         mat2_left = dataMat2['linPos_3603']
@@ -234,13 +268,20 @@ def startVis():
 
     start_Left = 1
     start_Right = 1
-    rt = RepeatedTimer(0.001, updateWins )
+    rt = RepeatedTimer(0.0001, updateWins )
 
     v1.vtkRen.setMat(mat1_left, mat1_right)
     v2.vtkRen.setMat(mat2_left, mat2_right)
 
     ui.horizontalSlider.setMaximum( len(mat1_left)-1 )
     ui.horizontalSlider_HC.setMaximum( len(mat2_left)-1 )
+
+    #signals window
+    ui.graphicsView_3 = SignalWindow(viewWin=ui.graphicsView_3,
+                                     matdata=dataMat )
+    ui.graphicsView_4 = SignalWindow(viewWin=ui.graphicsView_4,
+                                     matdata=dataMat)
+
 
     
 
@@ -355,12 +396,7 @@ if __name__ == '__main__':
     ui.toolButton_pause.clicked.connect(pauseLeft)
     ui.toolButton_pause_HC.clicked.connect(pauseRight)
 
-    #signals window
-    ui.graphicsView_3 = SignalWindow(viewWin=ui.graphicsView_3,
-                                     signal_dir="../WalkingPositionData/summary_20181012-102913_MLK_Walk.mat")
-    ui.graphicsView_4 = SignalWindow(viewWin=ui.graphicsView_4,
-                                     signal_dir="../WalkingPositionData/summary_20191220-095327_MLK_Walk.mat")
-
+    
 
     MainWindow.show()
 
