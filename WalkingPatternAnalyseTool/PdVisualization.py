@@ -2,22 +2,24 @@
 
 # Form implementation generated from reading ui file 'PdVisualization.ui'
 #
-# Created by: PyQt5 UI code generator 5.9.2
+# Created by: PyQt5 UI code generator 5.14.1
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_mainWindow(object):
     def setupUi(self, mainWindow):
         mainWindow.setObjectName("mainWindow")
-        mainWindow.resize(1237, 755)
+        mainWindow.resize(1413, 822)
         mainWindow.setAutoFillBackground(True)
         self.centralwidget = QtWidgets.QWidget(mainWindow)
         self.centralwidget.setAutoFillBackground(True)
         self.centralwidget.setObjectName("centralwidget")
         self.groupBox = QtWidgets.QGroupBox(self.centralwidget)
-        self.groupBox.setGeometry(QtCore.QRect(0, 0, 551, 711))
+        self.groupBox.setGeometry(QtCore.QRect(0, 20, 551, 741))
         font = QtGui.QFont()
         font.setFamily("Helvetica")
         font.setBold(True)
@@ -29,7 +31,7 @@ class Ui_mainWindow(object):
         self.graphicsView.setGeometry(QtCore.QRect(20, 90, 511, 361))
         self.graphicsView.setObjectName("graphicsView")
         self.graphicsView_3 = QtWidgets.QGraphicsView(self.groupBox)
-        self.graphicsView_3.setGeometry(QtCore.QRect(20, 520, 511, 171))
+        self.graphicsView_3.setGeometry(QtCore.QRect(20, 540, 511, 171))
         self.graphicsView_3.setObjectName("graphicsView_3")
         self.groupBox_5 = QtWidgets.QGroupBox(self.groupBox)
         self.groupBox_5.setGeometry(QtCore.QRect(20, 450, 511, 71))
@@ -75,7 +77,7 @@ class Ui_mainWindow(object):
         self.vbox.setContentsMargins(0, 0, 0, 0)
         self.vbox.setObjectName("vbox")
         self.groupBox_2 = QtWidgets.QGroupBox(self.centralwidget)
-        self.groupBox_2.setGeometry(QtCore.QRect(550, 0, 531, 711))
+        self.groupBox_2.setGeometry(QtCore.QRect(550, 20, 531, 741))
         font = QtGui.QFont()
         font.setFamily("Helvetica")
         font.setBold(True)
@@ -87,7 +89,7 @@ class Ui_mainWindow(object):
         self.graphicsView_2.setGeometry(QtCore.QRect(20, 90, 491, 361))
         self.graphicsView_2.setObjectName("graphicsView_2")
         self.graphicsView_4 = QtWidgets.QGraphicsView(self.groupBox_2)
-        self.graphicsView_4.setGeometry(QtCore.QRect(20, 520, 491, 171))
+        self.graphicsView_4.setGeometry(QtCore.QRect(20, 540, 491, 171))
         self.graphicsView_4.setObjectName("graphicsView_4")
         self.groupBox_12 = QtWidgets.QGroupBox(self.groupBox_2)
         self.groupBox_12.setGeometry(QtCore.QRect(20, 450, 491, 71))
@@ -130,14 +132,14 @@ class Ui_mainWindow(object):
         self.vbox_HC.setContentsMargins(0, 0, 0, 0)
         self.vbox_HC.setObjectName("vbox_HC")
         self.btn_start = QtWidgets.QPushButton(self.centralwidget)
-        self.btn_start.setGeometry(QtCore.QRect(1080, 20, 151, 51))
+        self.btn_start.setGeometry(QtCore.QRect(1150, 40, 151, 51))
         self.btn_start.setObjectName("btn_start")
         self.textBrowser = QtWidgets.QTextBrowser(self.centralwidget)
-        self.textBrowser.setGeometry(QtCore.QRect(1090, 90, 141, 621))
+        self.textBrowser.setGeometry(QtCore.QRect(1110, 130, 271, 601))
         self.textBrowser.setObjectName("textBrowser")
         mainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(mainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1237, 22))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1413, 27))
         self.menubar.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
         self.menubar.setObjectName("menubar")
         mainWindow.setMenuBar(self.menubar)
@@ -167,8 +169,9 @@ class Ui_mainWindow(object):
         self.textBrowser.setHtml(_translate("mainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'.SF NS Text\'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:7.75385pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\'; font-size:10pt; font-weight:600;\">Instruction</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px; font-family:\'Helvetica Neue\'; font-size:10pt; font-weight:600;\"><br /></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\'; font-size:10pt;\">This tool is used for visualizing human walking pattern. </span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\'; font-size:10pt;\">The position data for animation is computed according to Accelerometer and Gyroscope data from sensors.</span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px; font-family:\'Helvetica Neue\'; font-size:10pt;\"><br /></p>\n"
@@ -180,5 +183,4 @@ class Ui_mainWindow(object):
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px; font-family:\'Helvetica Neue\'; font-size:10pt;\"><br /></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\'; font-size:10pt; font-weight:600;\">Usage</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\'; font-size:10pt;\">You could adjust  the angle of view with your mouse clicked in the animation viewport.</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\'; font-size:10pt;\">You could rewind, pause or fast forward the process using Timer panel.</span><span style=\" font-size:10pt;\"> </span></p></body></html>"))
-
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\'; font-size:10pt;\">You could rewind, pause or fast forward the process using Timer panel.</span><span style=\" font-family:\'.SF NS Text\'; font-size:10pt;\"> </span></p></body></html>"))

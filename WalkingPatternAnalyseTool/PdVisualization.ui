@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1237</width>
-    <height>755</height>
+    <width>1413</width>
+    <height>822</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,9 +24,9 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>0</y>
+      <y>20</y>
       <width>551</width>
-      <height>711</height>
+      <height>741</height>
      </rect>
     </property>
     <property name="font">
@@ -56,7 +56,7 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>520</y>
+       <y>540</y>
        <width>511</width>
        <height>171</height>
       </rect>
@@ -188,9 +188,9 @@
     <property name="geometry">
      <rect>
       <x>550</x>
-      <y>0</y>
+      <y>20</y>
       <width>531</width>
-      <height>711</height>
+      <height>741</height>
      </rect>
     </property>
     <property name="font">
@@ -220,7 +220,7 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>520</y>
+       <y>540</y>
        <width>491</width>
        <height>171</height>
       </rect>
@@ -342,8 +342,8 @@
    <widget class="QPushButton" name="btn_start">
     <property name="geometry">
      <rect>
-      <x>1080</x>
-      <y>20</y>
+      <x>1150</x>
+      <y>40</y>
       <width>151</width>
       <height>51</height>
      </rect>
@@ -355,18 +355,19 @@
    <widget class="QTextBrowser" name="textBrowser">
     <property name="geometry">
      <rect>
-      <x>1090</x>
-      <y>90</y>
-      <width>141</width>
-      <height>621</height>
+      <x>1110</x>
+      <y>130</y>
+      <width>271</width>
+      <height>601</height>
      </rect>
     </property>
     <property name="html">
      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.SF NS Text'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:7.75385pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;&quot;&gt;&lt;span style=&quot; font-family:'Helvetica Neue'; font-size:10pt; font-weight:600;&quot;&gt;Instruction&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px; font-family:'Helvetica Neue'; font-size:10pt; font-weight:600;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;&quot;&gt;&lt;span style=&quot; font-family:'Helvetica Neue'; font-size:10pt;&quot;&gt;This tool is used for visualizing human walking pattern. &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;&quot;&gt;&lt;span style=&quot; font-family:'Helvetica Neue'; font-size:10pt;&quot;&gt;The position data for animation is computed according to Accelerometer and Gyroscope data from sensors.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px; font-family:'Helvetica Neue'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
@@ -378,7 +379,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px; font-family:'Helvetica Neue'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;&quot;&gt;&lt;span style=&quot; font-family:'Helvetica Neue'; font-size:10pt; font-weight:600;&quot;&gt;Usage&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;&quot;&gt;&lt;span style=&quot; font-family:'Helvetica Neue'; font-size:10pt;&quot;&gt;You could adjust  the angle of view with your mouse clicked in the animation viewport.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;&quot;&gt;&lt;span style=&quot; font-family:'Helvetica Neue'; font-size:10pt;&quot;&gt;You could rewind, pause or fast forward the process using Timer panel.&lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;&quot;&gt;&lt;span style=&quot; font-family:'Helvetica Neue'; font-size:10pt;&quot;&gt;You could rewind, pause or fast forward the process using Timer panel.&lt;/span&gt;&lt;span style=&quot; font-family:'.SF NS Text'; font-size:10pt;&quot;&gt; &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
   </widget>
@@ -387,8 +388,8 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1237</width>
-     <height>22</height>
+     <width>1413</width>
+     <height>27</height>
     </rect>
    </property>
    <property name="contextMenuPolicy">
