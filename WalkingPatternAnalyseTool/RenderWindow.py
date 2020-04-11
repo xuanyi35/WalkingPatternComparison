@@ -182,11 +182,11 @@ class vtkWin:
         
 
         # Initialize a timer for the animation
-
-        self.mat = scipy.io.loadmat('../WalkingPositionData/linePos_3603_20191220.mat')['linPos']
+        dataMat = scipy.io.loadmat('../WalkingPositionData/summary_20191220-095327_MLK_Walk.mat')
+        self.mat = dataMat['linPos_3603']
         self.mat = self.mat[::10]
 
-        self.mat2 = scipy.io.loadmat('../WalkingPositionData/linePos_3593_20191220-095327.mat')['linPos']
+        self.mat2 = dataMat['linPos_3593']
         self.mat2 = self.mat2[::10]
         
 

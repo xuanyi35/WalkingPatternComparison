@@ -38,6 +38,7 @@ i = 0
 file_1 = None
 file_2 = None
 file_for = 'P'   # file for patient or HC
+rt = None
 
 class VideoWindow:
     def __init__(self, viewWin, dirName, st, slider, parent=None):
@@ -228,7 +229,7 @@ def startVis():
 
     start_Left = 1
     start_Right = 1
-
+    global rt 
     rt = RepeatedTimer(0.001, updateWins )
 
 def updateWins():
@@ -348,7 +349,10 @@ if __name__ == '__main__':
     if k == 0:
         # v1.stopTimer()
         # v2.stopTimer()
-        rt.stop()
+        try:
+            rt.stop()
+        except:
+            pass
     sys.exit(k)
 
 
