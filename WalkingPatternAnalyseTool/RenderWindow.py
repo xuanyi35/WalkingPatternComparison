@@ -85,6 +85,14 @@ class MoveFootTimerCallback():
     def execute(self):
         # print(self.posCounter)
         # print(self.i)
+
+        if self.posCounter == 0:
+            self.renderer.ResetCamera()
+            self.getCamPos()
+           
+        if self.posCounter == len(self.positions) -1 :
+            self.posCounter -= 1
+            
         if self.i == self.iterations:
             self.movingObj.changePosition(self.positions[self.posCounter])
             self.movingObj2.changePosition(self.positions2[self.posCounter])
@@ -94,14 +102,7 @@ class MoveFootTimerCallback():
             self.camFoc = self.cam.GetFocalPoint()
             self.campos = self.cam.GetPosition()
 
-        if self.posCounter == 0:
-            self.renderer.ResetCamera()
-            self.getCamPos()
-           
-        if self.posCounter == len(self.positions):
-            iren.DestroyTimer(self.timerId)
-            # self.points.SetNumberOfPoints(self.posCounter)
-            # self.lines.InsertNextCell(self.posCounter )
+        
 
 
         self.i += 1
@@ -171,9 +172,9 @@ class vtkWin:
 
     def setMat(self, mat_left, mat_right):
         
-        self.mat = mat_left[::10]
-        self.mat2 = mat_right[::10]
-        self.moveFootTimerCallback = MoveFootTimerCallback(self.ren, self.left_foot, 10, self.mat, self.right_foot, self.mat2, self.renderWindowInteractor )
+        self.mat = mat_left[::1]
+        self.mat2 = mat_right[::1]
+        self.moveFootTimerCallback = MoveFootTimerCallback(self.ren, self.left_foot, 1, self.mat, self.right_foot, self.mat2, self.renderWindowInteractor )
     
 
     

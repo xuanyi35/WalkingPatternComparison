@@ -209,8 +209,8 @@ def startVis():
     print(file_1)
     print(file_2)
 
-    # file_1 = "C:/Users/Cecilia/Desktop/804GUI/WalkingPatternComparison/WalkingPositionData/summary_20181012-102913_MLK_Walk.mat"
-    # file_2 =  "C:/Users/Cecilia/Desktop/804GUI/WalkingPatternComparison/WalkingPositionData/summary_20191220-095327_MLK_Walk.mat"
+    file_1 = "C:/Users/Cecilia/Desktop/804GUI/WalkingPatternComparison/WalkingPositionData/summary_20181012-102913_MLK_Walk.mat"
+    file_2 =  "C:/Users/Cecilia/Desktop/804GUI/WalkingPatternComparison/WalkingPositionData/summary_20191220-095327_MLK_Walk.mat"
 
     if file_1 == None or file_2 == None:
         d = CustomDialog("Please select data file before you start.....")
@@ -239,8 +239,8 @@ def startVis():
     v1.vtkRen.setMat(mat1_left, mat1_right)
     v2.vtkRen.setMat(mat2_left, mat2_right)
 
-    ui.horizontalSlider.setMaximum( len(mat1_left) )
-    ui.horizontalSlider_HC.setMaximum( len(mat2_left) )
+    ui.horizontalSlider.setMaximum( len(mat1_left)-1 )
+    ui.horizontalSlider_HC.setMaximum( len(mat2_left)-1 )
 
     
 
@@ -248,9 +248,11 @@ def startVis():
     
 
 def updateWins():
-    global v1, v2
-    v1.vtkRen.moveFootTimerCallback.execute()
-    v2.vtkRen.moveFootTimerCallback.execute()
+    global v1, v2, start_Left, start_Right
+    if start_Left == 1:
+        v1.vtkRen.moveFootTimerCallback.execute()
+    if start_Right == 1:
+        v2.vtkRen.moveFootTimerCallback.execute()
 
 
 def exit_handler():
@@ -258,13 +260,16 @@ def exit_handler():
 
 
 def leftSliderReleased():
-    global t1, ui
+    global t1, ui, v1
     t1 = ui.horizontalSlider.value()
+    v1.vtkRen.moveFootTimerCallback.posCounter = ui.horizontalSlider.value()
 
 
 def rightSliderReleased():
-    global t2, ui
+    global t2, ui, v2
     t2 = ui.horizontalSlider_HC.value()
+    v2.vtkRen.moveFootTimerCallback.posCounter = ui.horizontalSlider_HC.value()
+
 
 
 def pauseLeft():
