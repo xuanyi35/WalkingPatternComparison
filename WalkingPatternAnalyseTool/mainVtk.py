@@ -18,6 +18,7 @@ import vtk
 import vtk.qt
 # vtk.qt.QVTKRWIBase = "QGLWidget"
 from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
+import scipy.io
 
 # control start or stop for left and right
 start_Left = 0
@@ -91,21 +92,21 @@ class FileWindow(QWidget):
 
 class CustomDialog(QDialog):
 
-    def __init__(self, *args, **kwargs):
-        super(CustomDialog, self).__init__(*args, **kwargs)
+    def __init__(self, infotext, parent=None):
+        QDialog.__init__(self, parent)
 
         self.setWindowTitle("Info Box")
         self.resize(150, 150)
-        self.info = QLabel("Wait, we are generating data.....")
-        # QBtn = QDialogButtonBox.Ok | QDialogButtonBox.Cancel
+        self.info = QLabel(infotext)
+        QBtn = QDialogButtonBox.Ok | QDialogButtonBox.Cancel
 
-        # self.buttonBox = QDialogButtonBox(QBtn)
-        # self.buttonBox.accepted.connect(self.accept)
-        # self.buttonBox.rejected.connect(self.reject)
+        self.buttonBox = QDialogButtonBox(QBtn)
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
 
         self.layout = QVBoxLayout()
         self.layout.addWidget(self.info)
-        # self.layout.addWidget( self.buttonBox)
+        self.layout.addWidget( self.buttonBox)
         self.setLayout(self.layout)
 
 
@@ -203,34 +204,48 @@ class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
 def startVis():
     print("start!")
 
-
-    # if os.path.exists(f1):
-    #     shutil.rmtree(f1)
-    # os.makedirs(f1)
-    # if os.path.exists(f2):
-    #     shutil.rmtree(f2)
-    # os.makedirs(f2)
-
-    global pro1, pro2, start_Left,start_Right, ui, file_1, file_2
+    global pro1, pro2, start_Left,start_Right, ui, file_1, file_2, rt,  v1, v2
 
     print(file_1)
     print(file_2)
 
-    #pro1 = subprocess.Popen("blender -b untitled.blend -x 1 -o //"+f1+"/render -s 10 -e 500 -a",  stdout=subprocess.DEVNULL)
-    # pro2 = subprocess.Popen("blender -b untitled2.blend -x 1 -o //"+f2+"/render -s 10 -e 500 -a",  stdout=subprocess.DEVNULL)
-    ui.horizontalSlider.setMaximum(490)
-    ui.horizontalSlider_HC.setMaximum(490)
+    # file_1 = "C:/Users/Cecilia/Desktop/804GUI/WalkingPatternComparison/WalkingPositionData/summary_20181012-102913_MLK_Walk.mat"
+    # file_2 =  "C:/Users/Cecilia/Desktop/804GUI/WalkingPatternComparison/WalkingPositionData/summary_20191220-095327_MLK_Walk.mat"
 
-    # wait for 7 seconds and close
-    # d = CustomDialog()
-    # QtCore.QTimer.singleShot(7000, d.close )
-    # d.exec_()
+    if file_1 == None or file_2 == None:
+        d = CustomDialog("Please select data file before you start.....")
+        # QtCore.QTimer.singleShot(2000, d.close )
+        d.exec_()
+        return 
+
+    try:
+        dataMat = scipy.io.loadmat( file_1 ) 
+        dataMat2 = scipy.io.loadmat( file_2 ) 
+        mat1_left = dataMat['linPos_3603']
+        mat1_right = dataMat['linPos_3593']
+        mat2_left = dataMat2['linPos_3603']
+        mat2_right = dataMat2['linPos_3593']
+    except:
+        d = CustomDialog("Please use official tool to generate data file")
+        # QtCore.QTimer.singleShot(2000, d.close )
+        d.exec_()
+        return 
 
 
     start_Left = 1
     start_Right = 1
-    global rt 
     rt = RepeatedTimer(0.001, updateWins )
+
+    v1.vtkRen.setMat(mat1_left, mat1_right)
+    v2.vtkRen.setMat(mat2_left, mat2_right)
+
+    ui.horizontalSlider.setMaximum( len(mat1_left) )
+    ui.horizontalSlider_HC.setMaximum( len(mat2_left) )
+
+    
+
+
+    
 
 def updateWins():
     global v1, v2

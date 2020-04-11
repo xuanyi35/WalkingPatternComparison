@@ -150,57 +150,32 @@ class vtkWin:
     def __init__(self, renderInter):
         # Renderer
         self.ren = vtk.vtkRenderer()
-        # self.ren.ResetCamera()
-
-        # renderWindow.AddRenderer(self.ren)
         self.ren.SetBackground(0.1, 0.2, 0.4)
-
-
-        # Interactor
-        # renderWindowInteractor = vtk.vtkRenderWindowInteractor()
-
         self.renderWindowInteractor = renderInter
-
-        # self.renderWindowInteractor = QVTKRenderWindowInteractor(renderInter)
-
-        # if change scene
-        # self.renderWindowInteractor.AddObserver(
-        #     vtkCommand.LeftButtonPressEvent,
-        #     onLeftButtonPressEvent)
-        # self.renderWindowInteractor.AddObserver(
-        #     vtkCommand.MouseWheelForwardEvent,
-        #     onMouseWheelForwardEvent)
-        # self.renderWindowInteractor.AddObserver(
-        #     vtkCommand.MouseWheelBackwardEvent,
-        #     onMouseWheelBackwardEvent)
-
-
         self.renderWindowInteractor.GetRenderWindow().AddRenderer(self.ren)
-        # renderWindowInteractor.SetRenderWindow(renderWindow)
         self.renderWindowInteractor.Initialize()
 
-        
-
-        # Initialize a timer for the animation
-        dataMat = scipy.io.loadmat('../WalkingPositionData/summary_20191220-095327_MLK_Walk.mat')
-        self.mat = dataMat['linPos_3603']
-        self.mat = self.mat[::10]
-
-        self.mat2 = dataMat['linPos_3593']
-        self.mat2 = self.mat2[::10]
-        
-
+        # initialize two foot 
+        self.mat = [[0,0,0]]
+        self.mat2 = [[0,0,0]]
         self.left_foot = VtkMovingObj( self.mat[0])
         self.right_foot = VtkMovingObj( self.mat2[0])
-
+        
         self.moveFootTimerCallback = MoveFootTimerCallback(self.ren, self.left_foot, 10, self.mat, self.right_foot, self.mat2, self.renderWindowInteractor )
-        # self.renderWindowInteractor.AddObserver('TimerEvent', self.moveFootTimerCallback.execute)
-        # self.renderWindowInteractor.CreateRepeatingTimer(1)
-        # self.rt = RepeatedTimer(0.001, self.moveFootTimerCallback.execute )
 
+        
 
         self.renderWindowInteractor.Initialize()
         self.renderWindowInteractor.Start()
+
+
+    def setMat(self, mat_left, mat_right):
+        
+        self.mat = mat_left[::10]
+        self.mat2 = mat_right[::10]
+        self.moveFootTimerCallback = MoveFootTimerCallback(self.ren, self.left_foot, 10, self.mat, self.right_foot, self.mat2, self.renderWindowInteractor )
+    
+
     
 
     
