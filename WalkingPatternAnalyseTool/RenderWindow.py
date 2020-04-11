@@ -40,19 +40,23 @@ class VtkMovingObj:
     def __init__(self, initial_pos):
         # source = vtk.vtkSphereSource()
         # source.SetRadius(3.0)
-        cube = vtk.vtkCubeSource()
-        cube.SetXLength(5)
-        cube.SetYLength(4)
-        cube.SetZLength(3)
+        # cube = vtk.vtkCubeSource()
+        # cube.SetXLength(5)
+        # cube.SetYLength(4)
+        # cube.SetZLength(3)
+        self.reader = vtk.vtkOBJReader()
+        self.reader.SetFileName("shoes.obj")
 
         self.vtkPolyData = vtk.vtkPolyData()
         self.mapper = vtk.vtkPolyDataMapper()
-        self.mapper.SetInputConnection(cube.GetOutputPort())
+        self.mapper.SetInputConnection(self.reader.GetOutputPort())
 
         
         self.vtkActor = vtk.vtkActor()
         self.vtkActor.SetMapper(self.mapper)
+        self.vtkActor.SetScale(0.05)
         self.vtkActor.SetPosition( initial_pos )
+        self.vtkActor.RotateZ(90)
       
 
     def changePosition(self, position):
