@@ -2,13 +2,11 @@
 
 # Form implementation generated from reading ui file 'PdVisualization.ui'
 #
-# Created by: PyQt5 UI code generator 5.14.1
+# Created by: PyQt5 UI code generator 5.9.2
 #
 # WARNING! All changes made in this file will be lost!
 
-
 from PyQt5 import QtCore, QtGui, QtWidgets
-
 
 class Ui_mainWindow(object):
     def setupUi(self, mainWindow):
@@ -131,38 +129,15 @@ class Ui_mainWindow(object):
         self.vbox_HC = QtWidgets.QVBoxLayout(self.verticalLayoutWidget_3)
         self.vbox_HC.setContentsMargins(0, 0, 0, 0)
         self.vbox_HC.setObjectName("vbox_HC")
-        self.groupBox_3 = QtWidgets.QGroupBox(self.centralwidget)
-        self.groupBox_3.setGeometry(QtCore.QRect(1080, 0, 151, 711))
-        font = QtGui.QFont()
-        font.setFamily("Helvetica")
-        font.setBold(True)
-        font.setWeight(75)
-        self.groupBox_3.setFont(font)
-        self.groupBox_3.setObjectName("groupBox_3")
-        self.btn_start = QtWidgets.QPushButton(self.groupBox_3)
-        self.btn_start.setGeometry(QtCore.QRect(0, 570, 151, 71))
+        self.btn_start = QtWidgets.QPushButton(self.centralwidget)
+        self.btn_start.setGeometry(QtCore.QRect(1080, 20, 151, 61))
         self.btn_start.setObjectName("btn_start")
-        self.groupBox_4 = QtWidgets.QGroupBox(self.groupBox_3)
-        self.groupBox_4.setGeometry(QtCore.QRect(0, 120, 151, 281))
-        self.groupBox_4.setObjectName("groupBox_4")
-        self.verticalLayoutWidget = QtWidgets.QWidget(self.groupBox_4)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(0, 20, 151, 261))
-        self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
-        self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout.setObjectName("verticalLayout")
-        self.btn_Xaxis = QtWidgets.QPushButton(self.verticalLayoutWidget)
-        self.btn_Xaxis.setObjectName("btn_Xaxis")
-        self.verticalLayout.addWidget(self.btn_Xaxis)
-        self.btn_Yaxis = QtWidgets.QPushButton(self.verticalLayoutWidget)
-        self.btn_Yaxis.setObjectName("btn_Yaxis")
-        self.verticalLayout.addWidget(self.btn_Yaxis)
-        self.btn_Zaxis = QtWidgets.QPushButton(self.verticalLayoutWidget)
-        self.btn_Zaxis.setObjectName("btn_Zaxis")
-        self.verticalLayout.addWidget(self.btn_Zaxis)
+        self.textBrowser = QtWidgets.QTextBrowser(self.centralwidget)
+        self.textBrowser.setGeometry(QtCore.QRect(1080, 90, 151, 621))
+        self.textBrowser.setObjectName("textBrowser")
         mainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(mainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1237, 27))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1237, 22))
         self.menubar.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
         self.menubar.setObjectName("menubar")
         mainWindow.setMenuBar(self.menubar)
@@ -188,9 +163,22 @@ class Ui_mainWindow(object):
         self.toolButton_pause_HC.setText(_translate("mainWindow", "o"))
         self.toolButton_pauseRight_HC.setText(_translate("mainWindow", ">>>"))
         self.btn_flist_5.setText(_translate("mainWindow", "..."))
-        self.groupBox_3.setTitle(_translate("mainWindow", "Operating Panel"))
         self.btn_start.setText(_translate("mainWindow", "Start Visualization"))
-        self.groupBox_4.setTitle(_translate("mainWindow", "Animation View"))
-        self.btn_Xaxis.setText(_translate("mainWindow", "X axis"))
-        self.btn_Yaxis.setText(_translate("mainWindow", "Y axis"))
-        self.btn_Zaxis.setText(_translate("mainWindow", "Z axis"))
+        self.textBrowser.setHtml(_translate("mainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'.SF NS Text\'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\'; font-weight:600;\">Instruction</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\';\">This tool is used for visualizing human walking pattern. </span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\';\">The position data for animation is computed according to Accelerometer and Gyroscope data from sensors.</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px; font-family:\'Helvetica Neue\';\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\';\">In signal display: </span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\';\">3-color line is displaying the accelerometer data in coordinate axis.</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\'; font-weight:600; color:#bd180f;\">Red</span><span style=\" font-family:\'Helvetica Neue\';\"> is for </span><span style=\" font-family:\'Helvetica Neue\'; font-weight:600; color:#bd180f;\">X</span><span style=\" font-family:\'Helvetica Neue\';\"> axis.</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\'; font-weight:600; color:#2315c1;\">Blue </span><span style=\" font-family:\'Helvetica Neue\';\">is for </span><span style=\" font-family:\'Helvetica Neue\'; font-weight:600; color:#2315c1;\">Y</span><span style=\" font-family:\'Helvetica Neue\';\"> axis. </span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\'; font-weight:600; color:#108e1e;\">Green</span><span style=\" font-family:\'Helvetica Neue\';\"> is for </span><span style=\" font-family:\'Helvetica Neue\'; font-weight:600; color:#108e1e;\">Z</span><span style=\" font-family:\'Helvetica Neue\';\"> axis.</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px; font-family:\'Helvetica Neue\';\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\'; font-weight:600;\">Usage</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\';\">You could adjust  the angle of view with your mouse clicked in the animation viewport.</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:22px;\"><span style=\" font-family:\'Helvetica Neue\';\">You could rewind, pause or fast forward the process using Timer panel.</span> </p></body></html>"))
+
