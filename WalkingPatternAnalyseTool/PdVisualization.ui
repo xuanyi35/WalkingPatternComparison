@@ -122,10 +122,10 @@
      <widget class="QLabel" name="time_P">
       <property name="geometry">
        <rect>
-        <x>440</x>
+        <x>430</x>
         <y>40</y>
-        <width>41</width>
-        <height>17</height>
+        <width>61</width>
+        <height>20</height>
        </rect>
       </property>
       <property name="text">
@@ -285,9 +285,9 @@
      <widget class="QLabel" name="time_HC">
       <property name="geometry">
        <rect>
-        <x>420</x>
+        <x>410</x>
         <y>40</y>
-        <width>51</width>
+        <width>61</width>
         <height>20</height>
        </rect>
       </property>
