@@ -48,13 +48,13 @@ fcode_left = "3603"   # the default file code for right foot signal in Sensor hd
 fcode_right = "3593"   # the default file code for left foot signal in Sensor hdf5 file
 
 class VideoWindow:
-    def __init__(self, viewWin, dirName, st, slider, parent=None):
+    def __init__(self, viewWin, dirName, st, slider, timeLabel, parent=None):
         # Qt.QVBoxLayout.__init__(self, parent)
         self.win = viewWin
         self.frame = Qt.QFrame()
         self.vtkWidget = QVTKRenderWindowInteractor(self.frame)
         self.win.addWidget(self.vtkWidget)
-        self.vtkRen = vtkWin(self.vtkWidget, slider )
+        self.vtkRen = vtkWin(self.vtkWidget, slider, timeLabel )
 
     def getWin(self):
         return self.win 
@@ -248,8 +248,8 @@ def startVis():
     print(file_1)
     print(file_2)
 
-    file_1 = "C:/Users/Cecilia/Desktop/804GUI/WalkingPatternComparison/WalkingPositionData/summary_20181012-102913_MLK_Walk.mat"
-    file_2 =  "C:/Users/Cecilia/Desktop/804GUI/WalkingPatternComparison/WalkingPositionData/summary_20191220-095327_MLK_Walk.mat"
+    # file_1 = "C:/Users/Cecilia/Desktop/804GUI/WalkingPatternComparison/WalkingPositionData/summary_20181012-102913_MLK_Walk.mat"
+    # file_2 =  "C:/Users/Cecilia/Desktop/804GUI/WalkingPatternComparison/WalkingPositionData/summary_20191220-095327_MLK_Walk.mat"
 
     if file_1 == None or file_2 == None:
         d = CustomDialog("Please select data files before you start")
@@ -287,8 +287,10 @@ def startVis():
                                      matdata=dataMat, coresVideo = v2.vtkRen)
     ui.graphicsView_3 = s1.getWin()
     ui.graphicsView_4 = s2.getWin()
+
     rt = RepeatedTimer(0.06, updateWins )
 
+    
 
     
 
@@ -366,8 +368,8 @@ if __name__ == '__main__':
     ui.btn_flist_5.clicked.connect( openFiles_HC )
 
     # visualization window
-    v1 = VideoWindow( ui.vbox, f1, 0, ui.horizontalSlider)
-    v2 = VideoWindow( ui.vbox_HC, f2, 1, ui.horizontalSlider_HC)
+    v1 = VideoWindow( ui.vbox, f1, 0, ui.horizontalSlider, ui.time_P)
+    v2 = VideoWindow( ui.vbox_HC, f2, 1, ui.horizontalSlider_HC, ui.time_HC)
     ui.graphicsView = v1.getWin()
     ui.graphicsView_2 = v2.getWin()
 
@@ -383,7 +385,6 @@ if __name__ == '__main__':
     ui.toolButton_pause_HC.clicked.connect(pauseRight)
 
     
-
     MainWindow.show()
 
     

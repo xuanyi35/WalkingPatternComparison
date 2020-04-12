@@ -111,27 +111,26 @@
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QToolButton" name="toolButton_pauseLeft">
-         <property name="text">
-          <string>&lt;&lt;&lt;</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QToolButton" name="toolButton_pause">
          <property name="text">
           <string>o</string>
          </property>
         </widget>
        </item>
-       <item>
-        <widget class="QToolButton" name="toolButton_pauseRight">
-         <property name="text">
-          <string>&gt;&gt;&gt;</string>
-         </property>
-        </widget>
-       </item>
       </layout>
+     </widget>
+     <widget class="QLabel" name="time_P">
+      <property name="geometry">
+       <rect>
+        <x>450</x>
+        <y>40</y>
+        <width>41</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>00:00</string>
+      </property>
      </widget>
     </widget>
     <widget class="QPlainTextEdit" name="entry_flist_1">
@@ -275,27 +274,26 @@
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
-        <widget class="QToolButton" name="toolButton_pauseLeft_HC">
-         <property name="text">
-          <string>&lt;&lt;&lt;</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QToolButton" name="toolButton_pause_HC">
          <property name="text">
           <string>o</string>
          </property>
         </widget>
        </item>
-       <item>
-        <widget class="QToolButton" name="toolButton_pauseRight_HC">
-         <property name="text">
-          <string>&gt;&gt;&gt;</string>
-         </property>
-        </widget>
-       </item>
       </layout>
+     </widget>
+     <widget class="QLabel" name="time_HC">
+      <property name="geometry">
+       <rect>
+        <x>430</x>
+        <y>40</y>
+        <width>51</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>00:00</string>
+      </property>
      </widget>
     </widget>
     <widget class="QPlainTextEdit" name="entry_flist_5">

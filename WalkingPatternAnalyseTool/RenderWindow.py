@@ -8,7 +8,7 @@ from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 from threading import Timer
 import threading
 
-K = 10 
+K = 8 
 
 class RepeatedTimer(object):
     def __init__(self, interval, function, *args, **kwargs):
@@ -76,7 +76,7 @@ class VtkMovingObj:
 
 
 class MoveFootTimerCallback():
-    def __init__(self, renderer, movingObj, iterations, positions,movingObj2, position2, iren, slider ):
+    def __init__(self, renderer, movingObj, iterations, positions,movingObj2, position2, iren, slider, timeLabel ):
         self.iterations = iterations
         self.renderer = renderer
         self.cam = None
@@ -90,6 +90,7 @@ class MoveFootTimerCallback():
         self.i = 0
         self.iren = iren
         self.slider = slider
+        self.timeLabel = timeLabel
 
         
 
@@ -107,7 +108,10 @@ class MoveFootTimerCallback():
 
         if (self.posCounter+1) % K == 0:
             self.slider.setValue(self.posCounter)
-
+        
+        minute = self.posCounter * K // 128 //60
+        second = self.posCounter * K // 128 % 60
+        self.timeLabel.setText(  '%02d:%02d'%(minute, second) )
         if self.i == self.iterations:
             self.movingObj.changePosition(self.positions[self.posCounter])
             self.movingObj2.changePosition(self.positions2[self.posCounter])
@@ -144,29 +148,10 @@ class MoveFootTimerCallback():
         
 
         
-        
 
-
-        #print(self.movingObj.getPos() )
-
-
-# def onLeftButtonPressEvent(sender, event):
-#     global moveFootTimerCallback
-#     moveFootTimerCallback.getCamPos()
-#     moveFootTimerCallback.changeCamPos()
-
-# def onMouseWheelForwardEvent(sender, event):
-#     global moveFootTimerCallback
-#     moveFootTimerCallback.getCamPos()
-#     moveFootTimerCallback.changeCamPos()
-
-# def onMouseWheelBackwardEvent(sender, event):
-#     global moveFootTimerCallback
-#     moveFootTimerCallback.getCamPos()
-#     moveFootTimerCallback.changeCamPos()
 
 class vtkWin:
-    def __init__(self, renderInter, slider):
+    def __init__(self, renderInter, slider, timeLabel):
         # Renderer
         self.ren = vtk.vtkRenderer()
         self.ren.SetBackground(0.1, 0.2, 0.4)
@@ -180,8 +165,9 @@ class vtkWin:
         self.left_foot = VtkMovingObj( self.mat[0], 0)
         self.right_foot = VtkMovingObj( self.mat2[0], 1)
         self.slider = slider
+        self.timeLabel = timeLabel
         
-        self.moveFootTimerCallback = MoveFootTimerCallback(self.ren, self.left_foot, 10, self.mat, self.right_foot, self.mat2, self.renderWindowInteractor, self.slider )
+        self.moveFootTimerCallback = MoveFootTimerCallback(self.ren, self.left_foot, 10, self.mat, self.right_foot, self.mat2, self.renderWindowInteractor, self.slider, self.timeLabel )
 
         
 
@@ -193,7 +179,7 @@ class vtkWin:
         
         self.mat = mat_left[::1]
         self.mat2 = mat_right[::1]
-        self.moveFootTimerCallback = MoveFootTimerCallback(self.ren, self.left_foot, 1, self.mat, self.right_foot, self.mat2, self.renderWindowInteractor, self.slider )
+        self.moveFootTimerCallback = MoveFootTimerCallback(self.ren, self.left_foot, 1, self.mat, self.right_foot, self.mat2, self.renderWindowInteractor, self.slider, self.timeLabel )
     
 
     
