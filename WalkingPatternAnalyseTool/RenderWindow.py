@@ -8,6 +8,7 @@ from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 from threading import Timer
 import threading
 
+K = 10 
 
 class RepeatedTimer(object):
     def __init__(self, interval, function, *args, **kwargs):
@@ -57,10 +58,10 @@ class VtkMovingObj:
 
         self.vtkActor.SetPosition( initial_pos )
         if(is_right):
-            self.vtkActor.SetScale(0.005)
+            self.vtkActor.SetScale(0.008)
             self.vtkActor.RotateZ(90)
         else:
-            self.vtkActor.SetScale(-0.005)
+            self.vtkActor.SetScale(-0.008)
             self.vtkActor.RotateZ(90)
             self.vtkActor.RotateX(180)
 
@@ -104,7 +105,7 @@ class MoveFootTimerCallback():
         if self.posCounter == len(self.positions) -1 :
             self.posCounter -= 1
 
-        if self.posCounter % 128 == 0:
+        if (self.posCounter+1) % K == 0:
             self.slider.setValue(self.posCounter)
 
         if self.i == self.iterations:

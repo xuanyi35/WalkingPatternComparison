@@ -31,21 +31,21 @@ pro1 = None
 pro2 = None
 # timer to link the slider
 # horizontalSlider_2
-t1 = 0
-t2 = 0
+# t1 = 0
+# t2 = 0
 s1 = None
 s2 = None
 
-i = 0
+# i = 0
 
 file_1 = None
 file_2 = None
 file_for = 'P'   # file for patient or HC
 rt = None
+K = 8
 
-
-fcode_left = "3593"   # the default file code for left foot signal in Sensor hdf5 file
-fcode_right = "3603"   # the default file code for left foot signal in Sensor hdf5 file
+fcode_left = "3603"   # the default file code for right foot signal in Sensor hdf5 file
+fcode_right = "3593"   # the default file code for left foot signal in Sensor hdf5 file
 
 class VideoWindow:
     def __init__(self, viewWin, dirName, st, slider, parent=None):
@@ -127,10 +127,10 @@ class SignalWindow:
         # Todo: x_len is the length of the data
         # Todo: y_range should be adjust itself, x should be change with timer, interval should be adjust with video
         self.myFig = []
-        self.canvas_left =  MyFigureCanvas(fcode=fcode_left, x_len=300, y_range=[-1200, 1200], interval=20,
+        self.canvas_left =  MyFigureCanvas(fcode=fcode_left, x_len=30, y_range=[-1200, 1200], interval=20,
                                     signal_mat=matdata, video = self.corresponding_video )
         self.myFig.append(self.canvas_left)
-        self.canvas_right = MyFigureCanvas(fcode=fcode_right, x_len=300, y_range=[-1200, 1200], interval=20,
+        self.canvas_right = MyFigureCanvas(fcode=fcode_right, x_len=30, y_range=[-1200, 1200], interval=20,
                                     signal_mat=matdata, video = self.corresponding_video )
         self.myFig.append(self.canvas_right)
 
@@ -146,6 +146,9 @@ class SignalWindow:
         self.grview.fitInView(0, 0, 115, 200)
         self.grview.show()
         return
+
+    def getWin(self):
+        return self.grview
 
 class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
     '''
@@ -165,7 +168,7 @@ class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
         self._x_len_ = x_len
         self._y_range_ = y_range
         self.interval = interval
-        self.data = signal_mat
+        self.data = signal_mat['linAcc_'+fcode][::K]
         self.video = video
         self.t = 0
         self.video_t = self.video.moveFootTimerCallback.getPosCounter()
@@ -183,13 +186,13 @@ class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
         ax.set_ylabel('Acceleration', fontsize=7, labelpad=5)
         ax.tick_params(labelsize=5)
 
-        self._animat_axs_(ax, fcode)
+        self._animat_axs_(ax)
         
         return
 
 
 
-    def _animat_axs_(self, ax, fcode):
+    def _animat_axs_(self, ax):
         ax.set_ylim(ymin=self._y_range_[0], ymax=self._y_range_[1])
         # Store two lists _x_ and _y_
         x = [[i,i,i] for i in range(0, self._x_len_) ]
@@ -202,11 +205,11 @@ class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
                                                                    x[:,1].tolist(), y[:,1].tolist(), 'b',
                                                                    x[:,2].tolist(), y[:,2].tolist(), 'g')
 
-        anim.FuncAnimation.__init__(self, self.figure, self._update_canvas_, fargs=(y.tolist(), fcode,),
+        anim.FuncAnimation.__init__(self, self.figure, self._update_canvas_, fargs=(y.tolist(), ),
                                   interval=self.interval, blit=True)
         return
 
-    def _update_canvas_(self,i, y, fcode) -> None:
+    def _update_canvas_(self,i, y) -> None:
         '''
         This function gets called regularly by the timer.
         '''
@@ -219,7 +222,7 @@ class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
 
             else:
                 self.t = self.video_t
-            y.append(self._get_next_datapoint( self.t )[fcode]) # Add new datapoint
+            y.append(self._get_next_datapoint( self.t )) # Add new datapoint
         y = y[-self._x_len_:]  # Truncate list _y_ : avoid broadcast error
         y = np.array(y)
         self._lineX_.set_ydata(y[:,0].tolist())
@@ -231,11 +234,11 @@ class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
     def _get_next_datapoint(self, i ):
         # global i
         # i += 1
-        if i > len(self.data['linAcc_'+fcode_left])-1 or i > len(self.data['linAcc_'+fcode_right])-1:
+        if i > len(self.data):
             print("signal end!")
 
-        return {fcode_left:self.data['linAcc_'+fcode_left][i], fcode_right:self.data['linAcc_'+fcode_right][i]}
-    
+        return self.data[i]
+
 
 def startVis():
     print("start!")
@@ -245,8 +248,8 @@ def startVis():
     print(file_1)
     print(file_2)
 
-    # file_1 = "C:/Users/Cecilia/Desktop/804GUI/WalkingPatternComparison/WalkingPositionData/summary_20181012-102913_MLK_Walk.mat"
-    # file_2 =  "C:/Users/Cecilia/Desktop/804GUI/WalkingPatternComparison/WalkingPositionData/summary_20191220-095327_MLK_Walk.mat"
+    file_1 = "C:/Users/Cecilia/Desktop/804GUI/WalkingPatternComparison/WalkingPositionData/summary_20181012-102913_MLK_Walk.mat"
+    file_2 =  "C:/Users/Cecilia/Desktop/804GUI/WalkingPatternComparison/WalkingPositionData/summary_20191220-095327_MLK_Walk.mat"
 
     if file_1 == None or file_2 == None:
         d = CustomDialog("Please select data files before you start")
@@ -257,10 +260,10 @@ def startVis():
     try:
         dataMat = sio.loadmat( file_1 ) 
         dataMat2 = sio.loadmat( file_2 ) 
-        mat1_left = dataMat['linPos_3603']
-        mat1_right = dataMat['linPos_3593']
-        mat2_left = dataMat2['linPos_3603']
-        mat2_right = dataMat2['linPos_3593']
+        mat1_left = dataMat['linPosHP_'+fcode_left][::K]
+        mat1_right = dataMat['linPosHP_'+fcode_right][::K]
+        mat2_left = dataMat2['linPosHP_'+fcode_left][::K]
+        mat2_right = dataMat2['linPosHP_'+fcode_right][::K]
     except:
         d = CustomDialog("Please use official tool to generate data file")
         # QtCore.QTimer.singleShot(2000, d.close )
@@ -282,9 +285,9 @@ def startVis():
                                      matdata=dataMat, coresVideo = v1.vtkRen )
     s2 = SignalWindow(viewWin=ui.graphicsView_4,
                                      matdata=dataMat, coresVideo = v2.vtkRen)
-    ui.graphicsView_3 = s1.grview
-    ui.graphicsView_4 = s2.grview
-    rt = RepeatedTimer(0.0001, updateWins )
+    ui.graphicsView_3 = s1.getWin()
+    ui.graphicsView_4 = s2.getWin()
+    rt = RepeatedTimer(0.06, updateWins )
 
 
     
