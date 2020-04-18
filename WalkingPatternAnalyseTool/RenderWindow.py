@@ -10,6 +10,7 @@ import threading
 
 K = 8 
 
+# timer is used to control time
 class RepeatedTimer(object):
     def __init__(self, interval, function, *args, **kwargs):
         self._timer     = None
@@ -35,7 +36,7 @@ class RepeatedTimer(object):
         self._timer.cancel()
         self.is_running = False
 
-
+# class for object foot
 class VtkMovingObj:
 
     def __init__(self, initial_pos, is_right):
@@ -74,7 +75,7 @@ class VtkMovingObj:
 
    
 
-
+# when the time is up, update the position of the moving object
 class MoveFootTimerCallback():
     def __init__(self, renderer, movingObj, iterations, positions,movingObj2, position2, iren, slider, timeLabel ):
         self.iterations = iterations
@@ -94,11 +95,7 @@ class MoveFootTimerCallback():
 
         
 
-    # def execute(self, iren, event):
     def execute(self):
-        # print(self.posCounter)
-        # print(self.i)
-
         if self.posCounter == 0:
             self.renderer.ResetCamera()
             self.getCamPos()
@@ -117,11 +114,11 @@ class MoveFootTimerCallback():
             self.movingObj2.changePosition(self.positions2[self.posCounter])
             self.i = 0
             self.posCounter += 1
+            # when the position is changed, will reset camera so that the camera follows the moving object
             self.renderer.ResetCamera()
             self.camFoc = self.cam.GetFocalPoint()
             self.campos = self.cam.GetPosition()
 
-        
 
 
         self.i += 1
@@ -129,14 +126,11 @@ class MoveFootTimerCallback():
         self.renderer.AddActor(self.movingObj.vtkActor)
         self.renderer.AddActor(self.movingObj2.vtkActor)
 
-        # iren.GetRenderWindow().Render()
         self.iren.Render()
 
     def changeCamPos(self):
         self.cam.SetPosition(self.campos )
         self.cam.SetFocalPoint(self.camFoc  )
-        #self.cam.SetViewUp()
-
 
     def getCamPos(self):
         self.cam = self.renderer.GetActiveCamera()
@@ -149,7 +143,8 @@ class MoveFootTimerCallback():
 
         
 
-
+# class for the vtk window, will be used by the GUI
+# one vtkWin object is used for one window in the GUI
 class vtkWin:
     def __init__(self, renderInter, slider, timeLabel):
         # Renderer
@@ -166,17 +161,13 @@ class vtkWin:
         self.right_foot = VtkMovingObj( self.mat2[0], 1)
         self.slider = slider
         self.timeLabel = timeLabel
-        
+        # initialize the MoveFootTimerCallback to update the positions of the feet
         self.moveFootTimerCallback = MoveFootTimerCallback(self.ren, self.left_foot, 10, self.mat, self.right_foot, self.mat2, self.renderWindowInteractor, self.slider, self.timeLabel )
-
-        
-
         self.renderWindowInteractor.Initialize()
         self.renderWindowInteractor.Start()
 
-
+    # when click start visualiozation, will get the data from the file browser
     def setMat(self, mat_left, mat_right):
-        
         self.mat = mat_left[::1]
         self.mat2 = mat_right[::1]
         self.moveFootTimerCallback = MoveFootTimerCallback(self.ren, self.left_foot, 1, self.mat, self.right_foot, self.mat2, self.renderWindowInteractor, self.slider, self.timeLabel )

@@ -12,47 +12,40 @@ from matplotlib.backends.backend_qt5agg import FigureCanvas
 import matplotlib as mpl
 import matplotlib.figure as mpl_fig
 import matplotlib.animation as anim
-# from matplotlib.backends.qt_compat import QtCore, QtWidgets
 import scipy.io as sio
 import vtk
 
 import vtk.qt
-# vtk.qt.QVTKRWIBase = "QGLWidget"
 from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 
-# control start or stop for left and right
+# control start or stop for patient and HC, 0 for pause, 1 for start
 start_Left = 0
 start_Right = 0
-# folder to save frames
-f1 = "frames_Left"
-f2 = "frames_Right"
-# process to control left, right
-pro1 = None
-pro2 = None
-# timer to link the slider
-# horizontalSlider_2
-# t1 = 0
-# t2 = 0
-s1 = None
-s2 = None
 
-# i = 0
+# s1 = None
+# s2 = None
 
+# file name for file selected from left file browser (patient)
 file_1 = None
+# file name for file selected from right file browser(HC)
 file_2 = None
 file_for = 'P'   # file for patient or HC
-rt = None
-K = 8
+
+rt = None   # repeat timer
+K = 8       # use all data will be time consuming, get sliced data (read every every k data) 
 
 fcode_left = "3603"   # the default file code for right foot signal in Sensor hdf5 file
 fcode_right = "3593"   # the default file code for left foot signal in Sensor hdf5 file
 
+# class used to update the GUI for walking pattern visualization 
 class VideoWindow:
-    def __init__(self, viewWin, dirName, st, slider, timeLabel, parent=None):
+    def __init__(self, viewWin, st, slider, timeLabel, parent=None):
         # Qt.QVBoxLayout.__init__(self, parent)
         self.win = viewWin
         self.frame = Qt.QFrame()
+        # get the RenderWindowInteractor from vtk window
         self.vtkWidget = QVTKRenderWindowInteractor(self.frame)
+        # add the RenderWindowInteractor to the PyQt5 GUI
         self.win.addWidget(self.vtkWidget)
         self.vtkRen = vtkWin(self.vtkWidget, slider, timeLabel )
 
@@ -60,7 +53,7 @@ class VideoWindow:
         return self.win 
 
 
-
+# class used to handle file browser, will create a popup window
 class FileWindow(QWidget):
 
     def __init__(self):
@@ -75,7 +68,6 @@ class FileWindow(QWidget):
     def initUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
-
         self.openFileNameDialog()
         self.close()
 
@@ -94,6 +86,7 @@ class FileWindow(QWidget):
             ui.entry_flist_5.setPlainText(fileName)
 
 
+# class used to show error dialog 
 class CustomDialog(QDialog):
 
     def __init__(self, infotext, parent=None):
@@ -115,7 +108,7 @@ class CustomDialog(QDialog):
 
 
 
-
+# class used to show signals (accelerations)
 class SignalWindow:
     def __init__(self, viewWin, matdata, coresVideo, parent=None):
         # Qt.QGraphicsView.__init__(self, parent)
@@ -232,28 +225,21 @@ class MyFigureCanvas(FigureCanvas, anim.FuncAnimation):
         return self._lineX_, self._lineY_, self._lineZ_
 
     def _get_next_datapoint(self, i ):
-        # global i
-        # i += 1
         if i > len(self.data):
             print("signal end!")
 
         return self.data[i]
 
 
+# function called when start visualization button is clicked 
 def startVis():
     print("start!")
 
-    global pro1, pro2, start_Left,start_Right, ui, file_1, file_2, rt,  v1, v2, s1, s2
+    global start_Left,start_Right, ui, file_1, file_2, rt,  v1, v2, s1, s2
 
-    print(file_1)
-    print(file_2)
-
-    # file_1 = "C:/Users/Cecilia/Desktop/804GUI/WalkingPatternComparison/WalkingPositionData/summary_20181012-102913_MLK_Walk.mat"
-    # file_2 =  "C:/Users/Cecilia/Desktop/804GUI/WalkingPatternComparison/WalkingPositionData/summary_20191220-095327_MLK_Walk.mat"
-
+    # error 1, no file is chosen 
     if file_1 == None or file_2 == None:
         d = CustomDialog("Please select data files before you start")
-        # QtCore.QTimer.singleShot(2000, d.close )
         d.exec_()
         return 
 
@@ -265,22 +251,24 @@ def startVis():
         mat2_left = dataMat2['linPosHP_'+fcode_left][::K]
         mat2_right = dataMat2['linPosHP_'+fcode_right][::K]
     except:
+        # error 2: file chosen is not the file we got from matlab
         d = CustomDialog("Please use official tool to generate data file")
-        # QtCore.QTimer.singleShot(2000, d.close )
         d.exec_()
         return 
 
-
+    # both patient and HC will start
     start_Left = 1
     start_Right = 1
 
+    # send the data we read from mat files
     v1.vtkRen.setMat(mat1_left, mat1_right)
     v2.vtkRen.setMat(mat2_left, mat2_right)
 
+    # update value for sliders
     ui.horizontalSlider.setMaximum( len(mat1_left)-1 )
     ui.horizontalSlider_HC.setMaximum( len(mat2_left)-1 )
 
-    #signals window
+    #update signals windows
     s1 = SignalWindow(viewWin=ui.graphicsView_3,
                                      matdata=dataMat, coresVideo = v1.vtkRen )
     s2 = SignalWindow(viewWin=ui.graphicsView_4,
@@ -288,6 +276,7 @@ def startVis():
     ui.graphicsView_3 = s1.getWin()
     ui.graphicsView_4 = s2.getWin()
 
+    # create an overall control timer
     rt = RepeatedTimer(0.06, updateWins )
 
     
@@ -296,56 +285,57 @@ def startVis():
 
 
     
-
+# function called by the repeated timer , will update the windows if it is not paused
 def updateWins():
     global v1, v2, start_Left, start_Right
     if start_Left == 1:
         v1.vtkRen.moveFootTimerCallback.execute()
-
-
     if start_Right == 1:
         v2.vtkRen.moveFootTimerCallback.execute()
 
 
-
+# exit handler
 def exit_handler():
     print('My application is ending!')
 
-
+# called when the value for left slider is changed
 def leftSliderReleased():
     global  ui, v1
     v1.vtkRen.moveFootTimerCallback.posCounter = ui.horizontalSlider.value()
 
-
+# called when the value for right slider is changed
 def rightSliderReleased():
     global  ui, v2
     v2.vtkRen.moveFootTimerCallback.posCounter = ui.horizontalSlider_HC.value()
 
 
-
+# called when start/pause button for patient is clicked
 def pauseLeft():
-    print("inLeft")
     global start_Left, ui
+    # if play, change to pause
     if start_Left == 1:
         start_Left = 0
+    # if pause, change to play
     else:
         start_Left = 1
 
-
+# called when start/pause button for HC is clicked
 def pauseRight():
-    print("inRight")
     global start_Right, ui
+    # if play, change to pause
     if start_Right == 1:
         start_Right = 0
+    # if pause, change to play
     else:
         start_Right = 1
 
-
+# open file browser for patient
 def openFiles_P():
     global file_for
     file_for = 'P'
     ex = FileWindow()
 
+# open file browser for HC
 def openFiles_HC():
     global file_for
     file_for = 'HC'
@@ -353,34 +343,33 @@ def openFiles_HC():
 
 
 if __name__ == '__main__':
-
     atexit.register(exit_handler)
 
+    # initilaize PyQt main window 
     app = QApplication(sys.argv)
     MainWindow = QMainWindow()
-
     MainWindow.setWindowFlags(QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
-
     ui = PdVisualization.Ui_mainWindow()
     ui.setupUi(MainWindow)
-    # choose files
+
+    # link files browser button to corresponding handler 
     ui.btn_flist_1.clicked.connect( openFiles_P )
     ui.btn_flist_5.clicked.connect( openFiles_HC )
 
-    # visualization window
-    v1 = VideoWindow( ui.vbox, f1, 0, ui.horizontalSlider, ui.time_P)
-    v2 = VideoWindow( ui.vbox_HC, f2, 1, ui.horizontalSlider_HC, ui.time_HC)
+    # link vtk visualization window to the corresponding window in PyQt GUI
+    v1 = VideoWindow( ui.vbox, 0, ui.horizontalSlider, ui.time_P)
+    v2 = VideoWindow( ui.vbox_HC, 1, ui.horizontalSlider_HC, ui.time_HC)
     ui.graphicsView = v1.getWin()
     ui.graphicsView_2 = v2.getWin()
 
-    #  start visualization
+    # link start visualization button to corresponding function 
     ui.btn_start.clicked.connect(startVis)
 
-    # read slider value
+    # link slider values to corresponding function 
     ui.horizontalSlider.sliderReleased.connect(leftSliderReleased)
     ui.horizontalSlider_HC.sliderReleased.connect(rightSliderReleased)
 
-    # pause and release
+    # linke pause and play to corresponding function 
     ui.toolButton_pause.clicked.connect(pauseLeft)
     ui.toolButton_pause_HC.clicked.connect(pauseRight)
 
@@ -389,6 +378,7 @@ if __name__ == '__main__':
 
     
     k = app.exec_()
+    # stop timer when exit the application 
     if k == 0:
         try:
             rt.stop()
