@@ -59,3 +59,7 @@ H5DataProcessingTool folder:  Used to do the data processing
 WalkingPositionData folder: Contains some sample data generated from the H5DataProcessingTool
 
 WalkingPatternAnalyseTool folder: Do the PD walking pattern visualization using vtk and PyQt5
+
+## Demo
+![Demo UI](https://github.com/xuanyi35/WalkingPatternComparison/blob/master/demo_UI.PNG)
+
