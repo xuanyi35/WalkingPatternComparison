@@ -1,6 +1,7 @@
 # WalkingPatternComparison
 PD and HealthControl Walking Pattern Visualization
 
+Done by Xuanyi, Yu and Jianfei. 
 
 ## Python and library requirements(windows):
 python          3.6.9
