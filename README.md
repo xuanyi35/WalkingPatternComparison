@@ -3,7 +3,7 @@ PD and HealthControl Walking Pattern Visualization
 
 
 ## Python and library requirements(windows):
-python==3.6.9
+python          3.6.9
 
 certifi         2019.11.28
 
@@ -50,3 +50,11 @@ reference: https://blog.csdn.net/qq_42980303/article/details/87869884
 You can download and use the anaconda environment that we have already set up:
 
 https://drive.google.com/open?id=1eFgboRVL2s6WlgpIe1lhbjElGydFqRV
+
+## Role for each folder:
+
+H5DataProcessingTool folder:  Used to do the data processing
+
+WalkingPositionData folder: Contains some sample data generated from the H5DataProcessingTool
+
+WalkingPatternAnalyseTool folder: Do the PD walking pattern visualization using vtk and PyQt5
